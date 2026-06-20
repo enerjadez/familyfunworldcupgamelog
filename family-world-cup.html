@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Family World Cup '26 — Live Leaderboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pitch-0:#06120d; --pitch-1:#0a1c14; --pitch-2:#0f2a1e;
+    --line:#1d4534; --surface:#0e2218; --surface-2:#12301f;
+    --ink:#eef6ee; --ink-soft:#bcd6c7; --muted:#7fa893;
+    --grass:#22c55e; --electric:#c6ff3e;
+    --gold:#ffd23f; --silver:#cdd7df; --bronze:#e08e4d; --danger:#ff5d5d;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:
+      radial-gradient(1200px 700px at 50% -10%, rgba(34,197,94,.10), transparent 60%),
+      repeating-linear-gradient(90deg, var(--pitch-0) 0 64px, var(--pitch-1) 64px 128px),
+      var(--pitch-0);
+    color:var(--ink); font-family:"Hanken Grotesk",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased; min-height:100vh; overflow-x:hidden;
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:0 18px 70px}
+
+  /* Top bar */
+  .topbar{
+    position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:14px 18px;margin:0 -18px 8px;
+    background:linear-gradient(to bottom, rgba(6,18,13,.96), rgba(6,18,13,.7) 70%, transparent);
+    backdrop-filter:blur(6px);
+  }
+  .brand{display:flex;align-items:center;gap:11px;min-width:0}
+  .crest{width:38px;height:38px;border-radius:10px;flex:none;
+    background:linear-gradient(145deg,var(--grass),#0c7a3e);display:grid;place-items:center;
+    color:#04140b;font-family:"Anton";font-size:20px;
+    box-shadow:0 0 0 1px rgba(198,255,62,.25), 0 8px 24px rgba(0,0,0,.5)}
+  .brand h1{font-family:"Anton";font-weight:400;font-size:19px;line-height:1;letter-spacing:.4px;
+    margin:0;text-transform:uppercase;white-space:nowrap}
+  .brand .sub{font-size:11px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-top:3px}
+  .live{display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--electric);font-weight:700}
+  .live .dot{width:8px;height:8px;border-radius:50%;background:var(--electric);
+    box-shadow:0 0 0 0 rgba(198,255,62,.7);animation:pulse 1.8s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(198,255,62,.55)}70%{box-shadow:0 0 0 9px rgba(198,255,62,0)}100%{box-shadow:0 0 0 0 rgba(198,255,62,0)}}
+
+  .stamp{font-size:11px;color:var(--muted);margin:2px 4px 16px;text-align:right}
+  .stamp b{color:var(--ink-soft)}
+
+  /* Podium */
+  .podium-shell{margin:6px 0 26px;padding:22px 14px 0;border:1px solid var(--line);border-radius:20px;
+    background:radial-gradient(600px 300px at 50% 0%, rgba(255,210,63,.06), transparent 70%),
+      linear-gradient(to bottom, rgba(18,48,31,.55), rgba(8,20,14,.2));position:relative;overflow:hidden}
+  .podium-shell .eyebrow{position:absolute;top:14px;left:18px;font-size:11px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--muted)}
+  .podium{display:grid;grid-template-columns:1fr 1.18fr 1fr;align-items:end;gap:10px;max-width:560px;margin:30px auto 0}
+  .stand{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px}
+  .medal{font-size:30px;line-height:1;filter:drop-shadow(0 3px 6px rgba(0,0,0,.5))}
+  .stand .flag{font-size:38px;line-height:1}
+  .stand .pname{font-family:"Anton";font-weight:400;text-transform:uppercase;letter-spacing:.4px;font-size:19px;line-height:1.05;max-width:150px}
+  .stand .ppts{font-family:"DM Mono";font-size:13px;color:var(--ink-soft)}
+  .stand .ppts b{color:var(--ink);font-size:15px}
+  .block{width:100%;border-radius:12px 12px 0 0;border:1px solid var(--line);border-bottom:none;
+    background:linear-gradient(to bottom, var(--surface-2), var(--surface));display:grid;place-items:center;position:relative}
+  .block .num{font-family:"Anton";font-size:34px;opacity:.22}
+  .p1 .block{height:128px;background:linear-gradient(to bottom, rgba(255,210,63,.22), rgba(255,210,63,.04));
+    border-color:rgba(255,210,63,.45);box-shadow:0 0 40px rgba(255,210,63,.12) inset}
+  .p2 .block{height:96px;border-color:rgba(205,215,223,.35)}
+  .p3 .block{height:74px;border-color:rgba(224,142,77,.35)}
+  .p1 .medal{font-size:38px}
+  .p1 .flag{font-size:46px;animation:float 4s ease-in-out infinite}
+  .p1 .pname{color:var(--gold);font-size:23px}
+  .crown{position:absolute;top:-12px;font-size:22px;animation:float 4s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+  /* Standings */
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin:0 4px 12px}
+  .sec-head h2{font-family:"Anton";font-weight:400;text-transform:uppercase;letter-spacing:.5px;font-size:16px;margin:0}
+  .sec-head .hint{font-size:12px;color:var(--muted)}
+  .board{display:flex;flex-direction:column;gap:8px}
+  .row{border:1px solid var(--line);border-radius:14px;overflow:hidden;
+    background:linear-gradient(to right, var(--surface), rgba(10,28,20,.6))}
+  .row.lead{border-color:rgba(255,210,63,.5);background:linear-gradient(to right, rgba(255,210,63,.08), var(--surface))}
+  .rowMain{width:100%;display:grid;grid-template-columns:46px 1fr auto;align-items:center;gap:12px;
+    background:none;border:none;color:inherit;text-align:left;cursor:pointer;padding:12px 14px;font-family:inherit}
+  .rank{font-family:"Anton";font-size:22px;color:var(--muted);text-align:center;line-height:1}
+  .row.lead .rank,.row.podi .rank{color:var(--ink)}
+  .rank .med{font-size:20px}
+  .who{min-width:0}
+  .name{font-family:"Anton";font-weight:400;text-transform:uppercase;letter-spacing:.4px;font-size:18px;line-height:1;display:block;margin-bottom:7px}
+  .teams{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;padding:3px 8px 3px 4px;border-radius:999px;
+    border:1px solid var(--line);background:rgba(6,18,13,.5);color:var(--muted);max-width:100%}
+  .chip.adv{color:var(--ink);border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.08)}
+  .chip .tier{font-family:"DM Mono";font-size:9px;font-weight:500;width:15px;height:15px;border-radius:50%;
+    display:grid;place-items:center;flex:none;color:#04140b}
+  .chip .tier.gold{background:var(--gold)} .chip .tier.silver{background:var(--silver)} .chip .tier.bronze{background:var(--bronze)}
+  .chip .fl{font-size:14px;line-height:1}
+  .chip .tn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .chip .st{font-family:"DM Mono";font-size:9.5px;opacity:.85;margin-left:1px}
+  .pts{font-family:"DM Mono";font-weight:500;text-align:right;line-height:1}
+  .pts .v{font-size:26px;color:var(--ink)}
+  .row.lead .pts .v{color:var(--gold)}
+  .pts .l{display:block;font-size:9px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-top:3px}
+  .bar{height:3px;background:rgba(255,255,255,.05)}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--grass),var(--electric));transition:width .8s cubic-bezier(.2,.7,.2,1)}
+  .row.lead .bar i{background:linear-gradient(90deg,var(--gold),#fff0b0)}
+  .breakdown{padding:2px 14px 14px 60px;display:none;color:var(--ink-soft);font-size:13px}
+  .row.open .breakdown{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+  .bd-line{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px dashed var(--line)}
+  .bd-line:first-child{border-top:none}
+  .bd-line .fl{font-size:16px}
+  .bd-line .wdl{font-family:"DM Mono";font-size:11px;color:var(--muted)}
+  .bd-line .calc{margin-left:auto;font-family:"DM Mono";font-size:12px;color:var(--muted);text-align:right}
+  .bd-line .calc b{color:var(--ink)}
+  .bd-bonus{color:var(--bronze)}
+
+  /* Legend */
+  .legend{margin-top:24px;border:1px solid var(--line);border-radius:14px;padding:16px;background:rgba(8,20,14,.5)}
+  .legend h3{font-family:"Anton";font-weight:400;text-transform:uppercase;letter-spacing:.4px;font-size:13px;margin:0 0 12px;color:var(--muted)}
+  .lgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px 22px}
+  @media(max-width:540px){.lgrid{grid-template-columns:1fr}}
+  .lgroup p{margin:0 0 7px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--electric)}
+  .lrow{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;color:var(--ink-soft)}
+  .lrow b{font-family:"DM Mono";color:var(--ink)}
+  .lrow .bz{color:var(--bronze);font-family:"DM Mono";font-size:11.5px}
+  .tiers{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-soft);margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+  .dotg{color:var(--gold)} .dots{color:var(--silver)} .dotb{color:var(--bronze)}
+
+  footer{margin-top:24px;text-align:center;color:var(--muted);font-size:11.5px;line-height:1.7}
+  footer b{color:var(--ink-soft)}
+  canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:70}
+
+  @media (max-width:560px){
+    .brand .sub{display:none}
+    .podium{gap:6px}
+    .stand .pname{font-size:16px} .p1 .pname{font-size:18px}
+    .name{font-size:16px} .pts .v{font-size:22px}
+    .rowMain{grid-template-columns:38px 1fr auto;gap:9px;padding:11px}
+    .breakdown{padding-left:48px}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="crest">★</div>
+      <div>
+        <h1>Family World Cup '26</h1>
+        <div class="sub">Sweepstake · Live Leaderboard</div>
+      </div>
+    </div>
+    <span class="live"><span class="dot"></span>Live</span>
+  </header>
+
+  <div class="stamp">Results as of <b id="stamp">Sat 20 Jun 2026</b> · Group stage</div>
+
+  <section class="podium-shell">
+    <span class="eyebrow">On the podium</span>
+    <div id="podium" class="podium"></div>
+  </section>
+
+  <div class="sec-head">
+    <h2>Full standings</h2>
+    <span class="hint">Tap a name for the breakdown</span>
+  </div>
+  <div class="board" id="board"></div>
+
+  <section class="legend">
+    <h3>How points are scored</h3>
+    <div class="lgrid">
+      <div class="lgroup">
+        <p>Match results</p>
+        <div class="lrow"><span>Win</span><span><b>+10</b> <span class="bz">+2 bronze</span></span></div>
+        <div class="lrow"><span>Draw</span><span><b>+5</b> <span class="bz">+1 bronze</span></span></div>
+      </div>
+      <div class="lgroup">
+        <p>Progression</p>
+        <div class="lrow"><span>Out of groups</span><span><b>+15</b> <span class="bz">+5 bronze</span></span></div>
+        <div class="lrow"><span>Quarterfinals</span><span><b>+15</b> <span class="bz">+5 bronze</span></span></div>
+        <div class="lrow"><span>Tournament winner</span><span><b>+30</b> <span class="bz">+10 bronze</span></span></div>
+      </div>
+      <div class="lgroup">
+        <p>Discipline</p>
+        <div class="lrow"><span>Red card (your teams)</span><span><b>–1</b></span></div>
+      </div>
+      <div class="lgroup">
+        <p>Your three picks</p>
+        <div class="lrow"><span><span class="dotg">●</span> Gold</span><span>top favourite</span></div>
+        <div class="lrow"><span><span class="dots">●</span> Silver</span><span>mid-tier</span></div>
+        <div class="lrow"><span><span class="dotb">●</span> Bronze</span><span>underdog · earns bonuses</span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Live leaderboard built from real World Cup results. Bronze underdogs earn bonus points for overperforming.<br>
+    No knockout rounds have started yet — progression bonuses unlock once teams advance out of the groups.<br>
+    <b>Snapshot dashboard:</b> ask to refresh anytime for the newest scores.
+  </footer>
+</div>
+
+<canvas id="confetti"></canvas>
+
+<script>
+/* ===== Picks ===== */
+const PLAYERS = [
+  ["Devnisa","Ecuador","Ivory Coast","Curaçao"],
+  ["Kailum","USA","Egypt","New Zealand"],
+  ["Iyla","Japan","Uruguay","Haiti"],
+  ["Daryn","France","Croatia","Algeria"],
+  ["Vassi","Belgium","Paraguay","Czechia"],
+  ["Angath","Japan","Austria","Panama"],
+  ["Antan","Spain","South Korea","Czechia"],
+  ["Khajal","USA","Ivory Coast","Cabo Verde"],
+  ["Mike","Belgium","South Korea","Curaçao"],
+  ["Premie","Japan","Paraguay","Tunisia"],
+  ["Leasen","Netherlands","Ghana","Tunisia"],
+  ["Seshni","Brazil","Austria","Cabo Verde"],
+  ["Trivesh","Germany","Canada","South Africa"],
+  ["Shanelle","Germany","Morocco","Saudi Arabia"],
+  ["Lenny","Belgium","DR Congo","Panama"],
+  ["Tracy","Norway","Switzerland","Uzbekistan"],
+  ["Kaily","Portugal","Türkiye","Jordan"],
+  ["Liyah","Senegal","Australia","Jordan"],
+  ["Jaden","Netherlands","Paraguay","South Africa"],
+  ["Shireen","England","Uruguay","Haiti"],
+  ["Ma","France","Türkiye","New Zealand"],
+  ["Thatha","Norway","Australia","Saudi Arabia"],
+].map(([name,g,s,b])=>({name,picks:[{tier:"gold",team:g},{tier:"silver",team:s},{tier:"bronze",team:b}]}));
+
+const FLAGS = {
+  "Ecuador":"🇪🇨","Ivory Coast":"🇨🇮","Curaçao":"🇨🇼","USA":"🇺🇸","Egypt":"🇪🇬","New Zealand":"🇳🇿",
+  "Japan":"🇯🇵","Uruguay":"🇺🇾","Haiti":"🇭🇹","France":"🇫🇷","Croatia":"🇭🇷","Algeria":"🇩🇿",
+  "Belgium":"🇧🇪","Paraguay":"🇵🇾","Czechia":"🇨🇿","Austria":"🇦🇹","Panama":"🇵🇦","Spain":"🇪🇸",
+  "South Korea":"🇰🇷","Cabo Verde":"🇨🇻","Netherlands":"🇳🇱","Ghana":"🇬🇭","Tunisia":"🇹🇳","Brazil":"🇧🇷",
+  "Germany":"🇩🇪","Canada":"🇨🇦","South Africa":"🇿🇦","Morocco":"🇲🇦","Saudi Arabia":"🇸🇦","DR Congo":"🇨🇩",
+  "Norway":"🇳🇴","Switzerland":"🇨🇭","Uzbekistan":"🇺🇿","Portugal":"🇵🇹","Türkiye":"🇹🇷","Jordan":"🇯🇴",
+  "Senegal":"🇸🇳","Australia":"🇦🇺","England":"🏴󠁧󠁢󠁥󠁮󠁧󠁿"
+};
+const flag = t => FLAGS[t] || "🏳️";
+
+/* ===== Live team data (real results to date) =====
+   w/d/l = group record · red = red cards · og/qf/champ = progression reached */
+const T = {
+  "USA":{w:2,d:0,l:0}, "Ivory Coast":{w:1,d:0,l:0}, "Ecuador":{w:0,d:0,l:1}, "Curaçao":{w:0,d:0,l:1},
+  "Egypt":{w:0,d:1,l:0}, "New Zealand":{w:0,d:1,l:0}, "Japan":{w:0,d:1,l:0}, "Uruguay":{w:0,d:1,l:0},
+  "Haiti":{w:0,d:0,l:1}, "France":{w:1,d:0,l:0}, "Croatia":{w:0,d:0,l:1}, "Algeria":{w:0,d:0,l:1},
+  "Belgium":{w:0,d:1,l:0}, "Paraguay":{w:0,d:0,l:1}, "Czechia":{w:0,d:1,l:1}, "Austria":{w:1,d:0,l:0},
+  "Panama":{w:0,d:0,l:1}, "Spain":{w:0,d:1,l:0}, "South Korea":{w:1,d:0,l:1}, "Cabo Verde":{w:0,d:1,l:0},
+  "Netherlands":{w:0,d:1,l:0}, "Ghana":{w:1,d:0,l:0}, "Tunisia":{w:0,d:0,l:1}, "Brazil":{w:0,d:1,l:0},
+  "Germany":{w:1,d:0,l:0}, "Canada":{w:1,d:1,l:0}, "South Africa":{w:0,d:1,l:1}, "Morocco":{w:1,d:1,l:0},
+  "Saudi Arabia":{w:0,d:1,l:0}, "DR Congo":{w:0,d:1,l:0}, "Norway":{w:1,d:0,l:0}, "Switzerland":{w:1,d:1,l:0},
+  "Uzbekistan":{w:0,d:0,l:1}, "Portugal":{w:0,d:1,l:0}, "Türkiye":{w:0,d:0,l:1}, "Jordan":{w:0,d:0,l:1},
+  "Senegal":{w:0,d:0,l:1}, "Australia":{w:1,d:0,l:1}, "England":{w:1,d:0,l:0}
+};
+// normalise: every team gets red + progression flags (none reached yet)
+Object.keys(T).forEach(k=>{const t=T[k];t.red=t.red||0;t.og=!!t.og;t.qf=!!t.qf;t.champ=!!t.champ;});
+const stat = t => T[t] || {w:0,d:0,l:0,red:0,og:false,qf:false,champ:false};
+
+/* ===== Scoring (official rules) ===== */
+function pickPoints(team, tier){
+  const s = stat(team), bronze = tier==="bronze";
+  const match = s.w*10 + s.d*5 + (bronze ? s.w*2 + s.d*1 : 0);
+  const prog = (s.og?15:0)+(s.qf?15:0)+(s.champ?30:0)
+             + (bronze ? (s.og?5:0)+(s.qf?5:0)+(s.champ?10:0) : 0);
+  const reds = s.red||0;
+  return { team, tier, bronze, s, match, prog, reds, total: match + prog - reds };
+}
+const playerBreakdown = p => p.picks.map(pk=>pickPoints(pk.team, pk.tier));
+const playerPts = p => playerBreakdown(p).reduce((a,b)=>a+b.total,0);
+
+function standings(){
+  return PLAYERS.map(p=>({p,pts:playerPts(p)}))
+    .sort((a,b)=> b.pts-a.pts || a.p.name.localeCompare(b.p.name));
+}
+
+/* ===== Render ===== */
+const TIERL = {gold:"G",silver:"S",bronze:"B"};
+const board = document.getElementById("board");
+
+function wdl(s){ return `${s.w}W ${s.d}D ${s.l}L`; }
+function recordShort(s){
+  return ["W".repeat(s.w),"D".repeat(s.d),"L".repeat(s.l)].join("")||"";
+}
+function chipHTML(pk){
+  const s = stat(pk.team), played = s.w+s.d+s.l, adv = (s.w+s.d)>0;
+  const rec = recordShort(s);
+  return `<span class="chip ${adv?'adv':''}"><span class="tier ${pk.tier}">${TIERL[pk.tier]}</span>`+
+    `<span class="fl">${flag(pk.team)}</span><span class="tn">${pk.team}</span>`+
+    (played?`<span class="st">${rec}</span>`:'')+`</span>`;
+}
+
+function render(){
+  const order = standings();
+  const max = Math.max(1, order[0].pts);
+
+  board.innerHTML = order.map((o,i)=>{
+    const rank=i+1, lead=rank===1, podi=rank<=3;
+    const med = podi ? `<span class="med">${["🥇","🥈","🥉"][rank-1]}</span>` : rank;
+    const bd = playerBreakdown(o.p).map(b=>{
+      const bonus = b.bronze ? (b.s.w*2+b.s.d*1) : 0;
+      const bonusTxt = (b.bronze && bonus>0) ? ` <span class="bd-bonus">+${bonus} bonus</span>` : "";
+      const redTxt = b.reds>0 ? ` <span style="color:var(--danger)">−${b.reds} red</span>` : "";
+      return `<div class="bd-line"><span class="fl">${flag(b.team)}</span>`+
+        `<span>${b.team} <span class="wdl">· ${wdl(b.s)}</span></span>`+
+        `<span class="calc"><b>${b.total}</b> pts${bonusTxt}${redTxt}</span></div>`;
+    }).join("");
+    return `<div class="row ${lead?'lead':''} ${podi?'podi':''}">
+      <button class="rowMain" aria-expanded="false" onclick="this.parentElement.classList.toggle('open');this.setAttribute('aria-expanded', this.parentElement.classList.contains('open'))">
+        <span class="rank">${med}</span>
+        <span class="who"><span class="name">${o.p.name}</span><span class="teams">${o.p.picks.map(chipHTML).join("")}</span></span>
+        <span class="pts"><span class="v">${o.pts}</span><span class="l">pts</span></span>
+      </button>
+      <div class="bar"><i style="width:${o.pts/max*100}%"></i></div>
+      <div class="breakdown">${bd}</div>
+    </div>`;
+  }).join("");
+
+  renderPodium(order);
+}
+
+function renderPodium(order){
+  const slots=[1,0,2], cls=["p1","p2","p3"];
+  document.getElementById("podium").innerHTML = slots.map(idx=>{
+    const o=order[idx]; if(!o) return "";
+    const rank=idx+1;
+    return `<div class="stand ${cls[idx]}">
+      ${rank===1?'<span class="crown">👑</span>':''}
+      <span class="medal">${["🥇","🥈","🥉"][rank-1]}</span>
+      <span class="flag">${flag(o.p.picks[0].team)}</span>
+      <span class="pname">${o.p.name}</span>
+      <span class="ppts"><b>${o.pts}</b> pts</span>
+      <div class="block"><span class="num">${rank}</span></div>
+    </div>`;
+  }).join("");
+}
+
+/* ===== Confetti on load (celebrate current leader) ===== */
+const cv=document.getElementById("confetti"), cx=cv.getContext("2d");
+let parts=[], raf=null;
+function size(){cv.width=innerWidth;cv.height=innerHeight} addEventListener("resize",size); size();
+function burst(){
+  if(matchMedia("(prefers-reduced-motion:reduce)").matches) return;
+  const cols=["#ffd23f","#c6ff3e","#22c55e","#ffffff","#e08e4d"];
+  for(let i=0;i<150;i++) parts.push({x:innerWidth/2+(Math.random()-.5)*140,y:innerHeight*0.26,
+    vx:(Math.random()-.5)*9,vy:Math.random()*-11-3,s:Math.random()*7+3,c:cols[i%cols.length],r:Math.random()*6,vr:(Math.random()-.5)*.4,life:1});
+  if(!raf) raf=requestAnimationFrame(tick);
+}
+function tick(){
+  cx.clearRect(0,0,cv.width,cv.height);
+  parts.forEach(p=>{p.vy+=.32;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;p.life-=.012;
+    cx.save();cx.globalAlpha=Math.max(0,p.life);cx.translate(p.x,p.y);cx.rotate(p.r);
+    cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);cx.restore();});
+  parts=parts.filter(p=>p.life>0 && p.y<cv.height+40);
+  if(parts.length) raf=requestAnimationFrame(tick); else raf=null;
+}
+
+render();
+setTimeout(burst, 450);
+</script>
+</body>
+</html>
