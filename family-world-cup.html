@@ -697,12 +697,17 @@ function tick(){cx.clearRect(0,0,cv.width,cv.height);
   load();
 })();
 
-/* ===== Live match data (free, no API key) — openfootball via jsDelivr CDN =====
-   Scores + goalscorers auto-update from the feed and override our saved data.
-   Red cards and progression bonuses are NOT in this free feed, so those stay
-   manual (edit cards[] in MATCHES and the PROG map above). If the fetch fails
-   (e.g. offline preview), the page just keeps showing the last saved data. */
-const LIVE_URL='https://cdn.jsdelivr.net/gh/openfootball/worldcup.json@master/2026/worldcup.json';
+/* ===== Live match data (free, no API key) — openfootball =====
+   Fetched fresh on every page load (and when you return to the tab). Scores +
+   goalscorers auto-update from the feed and override our saved data. Red cards
+   and progression bonuses are NOT in this free feed, so those stay manual (edit
+   cards[] in MATCHES and the PROG map above). If the fetch fails (e.g. offline
+   preview), the page just keeps showing the last saved data.
+   Primary source is GitHub raw (short cache); jsDelivr CDN is the backup. */
+const LIVE_SOURCES=[
+  ()=>`https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json?_=${Date.now()}`,
+  ()=>`https://cdn.jsdelivr.net/gh/openfootball/worldcup.json@master/2026/worldcup.json?_=${Date.now()}`
+];
 const OF2OURS={"Czech Republic":"Czechia","Bosnia & Herzegovina":"Bosnia","Turkey":"Türkiye","Cape Verde":"Cabo Verde","United States":"USA"};
 const mapTeam=n=>OF2OURS[n]||n;
 function parseLiveGoals(g1,g2){
@@ -711,12 +716,20 @@ function parseLiveGoals(g1,g2){
   (g2||[]).forEach(x=>o.push({s:"b",n:x.name||"",m:x.minute!=null?String(x.minute):undefined,x:x.owngoal?"OG":x.penalty?"pen":undefined}));
   return o;
 }
+async function fetchLiveData(){
+  let err;
+  for(const make of LIVE_SOURCES){
+    try{const r=await fetch(make(),{cache:'no-store'});if(r.ok)return r.json();err=new Error('HTTP '+r.status);}catch(e){err=e;}
+  }
+  throw err||new Error('unreachable');
+}
+let liveBusy=false,lastLive=0;
 async function refreshLive(){
+  if(liveBusy) return; liveBusy=true;
   const stamp=document.getElementById('stamp');
+  if(stamp) stamp.innerHTML='⏳ Fetching latest results…';
   try{
-    const r=await fetch(LIVE_URL,{cache:'no-store'});
-    if(!r.ok) throw new Error('http '+r.status);
-    const data=await r.json();
+    const data=await fetchLiveData();
     const idx={};
     (data.matches||[]).forEach(m=>{
       if(!m.score||!m.score.ft) return;                 // a match only carries a score once played
@@ -725,13 +738,18 @@ async function refreshLive(){
     let n=0;
     MATCHES.forEach(m=>{const h=idx[m.a+'|'+m.b];if(h){m.as=h.as;m.bs=h.bs;m.st="final";if(h.goals&&h.goals.length)m.goals=h.goals;n++;}});
     deriveT();renderBoard();renderResults();renderFixtures();
+    lastLive=Date.now();
+    const ts=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
     if(stamp) stamp.innerHTML = n>0
-      ? `⚡ Auto-updated from <b>openfootball</b> · ${n} live results · ${new Date().toLocaleDateString()}`
-      : `⚡ Live feed connected · no new results posted yet · showing latest saved`;
+      ? `⚡ Live from <b>openfootball</b> · ${n} results · updated ${ts}`
+      : `⚡ Live feed connected · no results posted yet · checked ${ts}`;
   }catch(e){
     if(stamp) stamp.innerHTML='Showing saved snapshot · live feed loads on your hosted site';
-  }
+  } finally { liveBusy=false; }
 }
+/* refresh on load, and again whenever the tab is reopened/refocused */
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden && Date.now()-lastLive>30000) refreshLive(); });
+window.addEventListener('focus',()=>{ if(Date.now()-lastLive>30000) refreshLive(); });
 
 renderBoard();renderResults();renderFixtures();
 refreshLive();
