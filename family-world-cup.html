@@ -609,7 +609,7 @@ function renderResults(){
     if(bO) fam+=`<div class="fam-row"><span class="ft"><span class="fl">${flag(m.b)}</span>${m.b}<span class="res ${bRes}">${bRes}</span>${redB?`<span class="redmark">🟥${redB>1?'×'+redB:''}</span>`:''}</span><span class="pchips">${ownerPchips(m.b,bRes,true,redB)}</span></div>`;
     const famBlock=(aO||bO)?`<div class="fam">${fam}</div>`:`<div class="nofam">No family teams in this match.</div>`;
     html+=`<div class="match ${clash?'clash':''}">
-      <div class="mtop"><span class="mtime">${m.t?'⏱ '+m.t:''}</span>${clash?'<span class="mtag clash">Family clash</span>':'<span class="mtag win">Full time</span>'}</div>
+      <div class="mtop"><span class="mtime">${m.t?'⏱ '+m.t+' SAST':''}</span>${clash?'<span class="mtag clash">Family clash</span>':'<span class="mtag win">Full time</span>'}</div>
       <div class="scoreline">${sideHTML(m.a,aRes,aO,'home')}<span class="sc">${m.as} – ${m.bs}${m.note?`<span class="aet">${m.note}</span>`:''}</span>${sideHTML(m.b,bRes,bO,'away')}</div>
       ${eventsBlock(m)}${famBlock}</div>`;
   });
@@ -632,7 +632,7 @@ function renderFixtures(){
     const probBar=pr?`<div class="prob"><span class="pa" style="width:${pr.a}%"></span><span class="pd" style="width:${pr.d}%"></span><span class="pb" style="width:${pr.b}%"></span></div>
       <div class="problab"><span><b>${m.a}</b> ${pr.a}%</span><span>Draw ${pr.d}%</span><span>${pr.b}% <b>${m.b}</b></span></div>`:"";
     html+=`<div class="match ${clash?'clash':''}">
-      <div class="mtop"><span class="mtime">⏱ ${m.t}</span>${clash?'<span class="mtag clash">Family clash</span>':(aO||bO)?'<span class="mtag win">Family team in</span>':''}</div>
+      <div class="mtop"><span class="mtime">⏱ ${m.t} SAST</span>${clash?'<span class="mtag clash">Family clash</span>':(aO||bO)?'<span class="mtag win">Family team in</span>':''}</div>
       <div class="scoreline">${sideHTML(m.a,'',aO,'home')}<span class="sc vs">VS</span>${sideHTML(m.b,'',bO,'away')}</div>
       ${probBar}${famBlock}</div>`;
   });
@@ -814,12 +814,30 @@ const CARDS={
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 function formatDay(d){ if(!d) return ''; const p=String(d).split('-').map(Number); const dt=new Date(p[0],(p[1]||1)-1,p[2]||1); return `${WD[dt.getDay()]} ${p[2]} ${MON[(p[1]||1)-1]}`; }
 function cleanTime(t){ return (t||'').split(' ')[0]; }
+/* ===== Convert any kickoff to South Africa time (SAST, UTC+2) ===== */
+const SA_TZ='Africa/Johannesburg';
+const _saDay=new Intl.DateTimeFormat('en-GB',{timeZone:SA_TZ,weekday:'short',day:'numeric',month:'short'});
+const _saTime=new Intl.DateTimeFormat('en-GB',{timeZone:SA_TZ,hour:'2-digit',minute:'2-digit',hour12:false});
+const _saISO=new Intl.DateTimeFormat('en-CA',{timeZone:SA_TZ,year:'numeric',month:'2-digit',day:'2-digit'});
+function sast(epoch){ if(isNaN(epoch)) return null; const d=new Date(epoch);
+  return { day:_saDay.format(d).replace(/,/g,''), t:_saTime.format(d), date:_saISO.format(d) }; }
+/* openfootball gives date "2026-06-11" + time "13:00 UTC-6" → a real UTC instant */
+function ofEpoch(date,time){
+  if(!date) return NaN;
+  const tm=String(time||'').match(/(\d{1,2}):(\d{2})/);
+  const off=String(time||'').match(/UTC\s*([+-]\d{1,2})(?::?(\d{2}))?/i);
+  const hh=(tm?tm[1]:'0').padStart(2,'0'), mm=tm?tm[2]:'00';
+  let z='Z';
+  if(off){ const s=off[1][0]==='-'?'-':'+'; const oh=String(Math.abs(parseInt(off[1],10))).padStart(2,'0'); z=`${s}${oh}:${off[2]||'00'}`; }
+  return Date.parse(`${date}T${hh}:${mm}:00${z}`);
+}
 function buildFromOF(data){
   const out=[];
   (data.matches||[]).forEach(m=>{
     const a=mapTeam(m.team1), b=mapTeam(m.team2);
     const played=!!(m.score&&m.score.ft), d=played?decide(m.score):null;
-    out.push({ date:m.date||'', t:cleanTime(m.time), day:formatDay(m.date), round:m.round||'', group:m.group||'',
+    const sa=sast(ofEpoch(m.date,m.time));
+    out.push({ date:sa?sa.date:(m.date||''), t:sa?sa.t:cleanTime(m.time), day:sa?sa.day:formatDay(m.date), round:m.round||'', group:m.group||'',
       st:played?'final':'scheduled', a, b,
       as:played?d.as:undefined, bs:played?d.bs:undefined, win:played?d.win:null, note:played?d.note:'',
       goals:played?parseLiveGoals(m.goals1,m.goals2):[], cards:CARDS[a+'|'+b]||[] });
@@ -857,7 +875,8 @@ function buildFromWC26(data){
     const stage=String(pick(m,['stage','round','phase'])||'');
     const grp=pick(m,['group','groupName','group_label','groupLetter']);
     const isGroup=/group/i.test(stage) || (grp!=null && /^[A-L]$/i.test(String(grp).trim()));
-    out.push({ date, t:time, day:formatDay(date),
+    const sa=sast(ts);
+    out.push({ date:sa?sa.date:date, t:sa?sa.t:time, day:sa?sa.day:formatDay(date),
       round:isGroup?'':stage, group:isGroup?('Group '+String(grp||'').replace(/group\s*/i,'').trim()):'',
       st:played?'final':'scheduled', a, b,
       as:played?+hs:undefined, bs:played?+as_:undefined, win:null, note:'',
