@@ -459,17 +459,26 @@ function computeStatus(){
     thirds.slice(0,8).forEach(t=>advanced.add(t.team));
     thirds.slice(8).forEach(t=>elim.add(t.team));
   }
-  const r32=new Set();
+  const r32=new Set(); let r32Total=0, r32Real=0;
   MATCHES.forEach(m=>{
     const rd=m.round||'';
-    if(/round of 32/i.test(rd)){ [m.a,m.b].forEach(t=>{ if(FLAGS[t]){ r32.add(t); advanced.add(t); } }); }
+    if(/round of 32/i.test(rd)){
+      r32Total++;
+      const aR=FLAGS[m.a], bR=FLAGS[m.b];
+      if(aR){ r32.add(m.a); advanced.add(m.a); }
+      if(bR){ r32.add(m.b); advanced.add(m.b); }
+      if(aR&&bR) r32Real++;
+    }
     if(/quarter/i.test(rd)){ [m.a,m.b].forEach(t=>{ if(FLAGS[t]) qf.add(t); }); }
     if(isKO(m)&&m.st==='final'&&FLAGS[m.a]&&FLAGS[m.b]){
       const w=resultOf(m), loser=w==='a'?m.b:m.a; elim.add(loser);
       if(/^final$/i.test(rd)) champion = w==='a'?m.a:m.b;
     }
   });
-  if(r32.size){                                     // bracket set → anyone not in R32 is out
+  /* Only treat "missing from the R32 bracket" as eliminated once the ENTIRE
+     bracket is filled with real teams (group stage fully resolved). A partly
+     filled bracket must never knock anyone out. */
+  if(r32Total>0 && r32Real===r32Total){
     const gt=new Set(); Object.values(groups).forEach(g=>Object.keys(g).forEach(t=>gt.add(t)));
     gt.forEach(t=>{ if(!r32.has(t)) elim.add(t); });
   }
@@ -769,18 +778,31 @@ function tick(){cx.clearRect(0,0,cv.width,cv.height);
   load();
 })();
 
-/* ===== Live match data (free, no API key) — openfootball =====
-   Fetched fresh on every page load (and when you return to the tab). Scores +
-   goalscorers auto-update from the feed and override our saved data. Red cards
-   and progression bonuses are NOT in this free feed, so those stay manual (edit
-   cards[] in MATCHES and the PROG map above). If the fetch fails (e.g. offline
-   preview), the page just keeps showing the last saved data.
-   Primary source is GitHub raw (short cache); jsDelivr CDN is the backup. */
-const LIVE_SOURCES=[
-  ()=>`https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json?_=${Date.now()}`,
-  ()=>`https://cdn.jsdelivr.net/gh/openfootball/worldcup.json@master/2026/worldcup.json?_=${Date.now()}`
+/* ===== Live match data (free, no API key) — multi-source with fallback =====
+   Tried in order on every page load (and when you return to the tab):
+     1) worldcup26.ir  — hosted REST API, claims real-time live scores
+     2) openfootball   — public-domain JSON, rock-solid but hand-updated ~daily
+   Whatever responds first with a full schedule wins; the status line shows which
+   one is live. To change priority, just reorder SOURCES below. Red cards +
+   progression aren't in either feed, so they stay manual (CARDS map below and
+   PROG map above). Offline (e.g. this preview) → falls back to saved snapshot. */
+const SOURCES=[
+  { name:'worldcup26.ir', kind:'wc26', url:()=>`https://worldcup26.ir/get/games?_=${Date.now()}` },
+  { name:'openfootball',  kind:'of',   url:()=>`https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json?_=${Date.now()}` },
+  { name:'openfootball',  kind:'of',   url:()=>`https://cdn.jsdelivr.net/gh/openfootball/worldcup.json@master/2026/worldcup.json?_=${Date.now()}` }
 ];
-const OF2OURS={"Czech Republic":"Czechia","Bosnia & Herzegovina":"Bosnia","Turkey":"Türkiye","Cape Verde":"Cabo Verde","United States":"USA"};
+const OF2OURS={
+  "Czech Republic":"Czechia","Czechia":"Czechia",
+  "Bosnia & Herzegovina":"Bosnia","Bosnia and Herzegovina":"Bosnia",
+  "Turkey":"Türkiye","Turkiye":"Türkiye",
+  "Cape Verde":"Cabo Verde",
+  "United States":"USA","United States of America":"USA","US":"USA",
+  "Korea Republic":"South Korea","Korea, Republic of":"South Korea",
+  "IR Iran":"Iran",
+  "Côte d'Ivoire":"Ivory Coast","Cote d'Ivoire":"Ivory Coast",
+  "Congo DR":"DR Congo","Democratic Republic of the Congo":"DR Congo",
+  "Curacao":"Curaçao"
+};
 const mapTeam=n=>OF2OURS[n]||n;
 /* Manual red/yellow cards (not in the free feed) keyed by "TeamA|TeamB".
    Only reds affect scoring. Add/adjust here as the tournament goes on. */
@@ -792,7 +814,7 @@ const CARDS={
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 function formatDay(d){ if(!d) return ''; const p=String(d).split('-').map(Number); const dt=new Date(p[0],(p[1]||1)-1,p[2]||1); return `${WD[dt.getDay()]} ${p[2]} ${MON[(p[1]||1)-1]}`; }
 function cleanTime(t){ return (t||'').split(' ')[0]; }
-function buildMatches(data){
+function buildFromOF(data){
   const out=[];
   (data.matches||[]).forEach(m=>{
     const a=mapTeam(m.team1), b=mapTeam(m.team2);
@@ -805,6 +827,45 @@ function buildMatches(data){
   out.sort((x,y)=> x.date<y.date?-1:x.date>y.date?1:(x.t<y.t?-1:x.t>y.t?1:0));
   return out;
 }
+function pick(o,keys){ for(const k of keys){ if(o&&o[k]!=null) return o[k]; } }
+function nameOf(v){ if(v==null) return ''; if(typeof v==='string') return v; return v.name||v.team||v.title||v.code||''; }
+/* Adapter for the worldcup26.ir shape:
+   { homeTeam:{name}, awayTeam:{name}, homeScore, awayScore, status, group, stage, datetime } */
+function buildFromWC26(data){
+  const arr = Array.isArray(data)?data : (data.matches||data.games||data.data||data.results||data.fixtures||[]);
+  const out=[];
+  (arr||[]).forEach(m=>{
+    const a=mapTeam(nameOf(pick(m,['homeTeam','home','team1','teamA','home_team']))),
+          b=mapTeam(nameOf(pick(m,['awayTeam','away','team2','teamB','away_team'])));
+    if(!a||!b) return;
+    const status=String(pick(m,['status','state','matchStatus'])||'').toLowerCase();
+    const hs=pick(m,['homeScore','home_score','homeGoals','scoreHome']),
+          as_=pick(m,['awayScore','away_score','awayGoals','scoreAway']);
+    const hasScore = hs!=null && as_!=null && hs!=='' && as_!=='';
+    const dt=String(pick(m,['datetime','date','kickoff','startTime','utcDate','dateTime'])||'');
+    const ts=Date.parse(dt);
+    const future = !isNaN(ts) && Date.now() < ts;                          // kickoff hasn't happened yet
+    const doneStatus = /complete|finished|full|ended|^ft$|played|^final$/.test(status);
+    const liveOrSched = /scheduled|upcoming|not.?started|^ns$|live|in.?play|in.?progress|postpon|tbd|pending/.test(status);
+    /* PLAYED only with a clear finished signal — an explicit "finished" status,
+       or a real score on a match that has already kicked off. Never in the
+       future. This stops 0-0 placeholders from looking like results and wrongly
+       "completing" a group before it's actually over. */
+    const played = !future && (doneStatus || (hasScore && !liveOrSched && !isNaN(ts)));
+    const date=dt.slice(0,10);
+    const time=dt.length>=16?dt.slice(11,16):cleanTime(pick(m,['time'])||'');
+    const stage=String(pick(m,['stage','round','phase'])||'');
+    const grp=pick(m,['group','groupName','group_label','groupLetter']);
+    const isGroup=/group/i.test(stage) || (grp!=null && /^[A-L]$/i.test(String(grp).trim()));
+    out.push({ date, t:time, day:formatDay(date),
+      round:isGroup?'':stage, group:isGroup?('Group '+String(grp||'').replace(/group\s*/i,'').trim()):'',
+      st:played?'final':'scheduled', a, b,
+      as:played?+hs:undefined, bs:played?+as_:undefined, win:null, note:'',
+      goals:[], cards:CARDS[a+'|'+b]||[] });
+  });
+  out.sort((x,y)=> x.date<y.date?-1:x.date>y.date?1:(x.t<y.t?-1:x.t>y.t?1:0));
+  return out;
+}
 function parseLiveGoals(g1,g2){
   const o=[];
   (g1||[]).forEach(x=>o.push({s:"a",n:x.name||"",m:x.minute!=null?String(x.minute):undefined,x:x.owngoal?"OG":x.penalty?"pen":undefined}));
@@ -812,11 +873,15 @@ function parseLiveGoals(g1,g2){
   return o;
 }
 async function fetchLiveData(){
-  let err;
-  for(const make of LIVE_SOURCES){
-    try{const r=await fetch(make(),{cache:'no-store'});if(r.ok)return r.json();err=new Error('HTTP '+r.status);}catch(e){err=e;}
+  for(const s of SOURCES){
+    try{
+      const r=await fetch(s.url(),{cache:'no-store'}); if(!r.ok) continue;
+      const data=await r.json();
+      const built = s.kind==='wc26'?buildFromWC26(data):buildFromOF(data);
+      if(built && built.length>=20) return {built, src:s.name};
+    }catch(e){}
   }
-  throw err||new Error('unreachable');
+  return null;
 }
 let liveBusy=false,lastLive=0;
 async function refreshLive(){
@@ -824,16 +889,19 @@ async function refreshLive(){
   const stamp=document.getElementById('stamp');
   if(stamp) stamp.innerHTML='⏳ Fetching latest results…';
   try{
-    const data=await fetchLiveData();
-    const built=buildMatches(data);
-    if(built.length){ MATCHES.length=0; built.forEach(m=>MATCHES.push(m)); }
-    deriveT();renderBoard();renderResults();renderFixtures();
-    lastLive=Date.now();
-    const played=MATCHES.filter(m=>m.st==='final').length;
-    const ts=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-    if(stamp) stamp.innerHTML = played>0
-      ? `⚡ Live from <b>openfootball</b> · ${played} results in · updated ${ts}`
-      : `⚡ Live feed connected · no results posted yet · checked ${ts}`;
+    const res=await fetchLiveData();
+    if(res){
+      MATCHES.length=0; res.built.forEach(m=>MATCHES.push(m));
+      deriveT();renderBoard();renderResults();renderFixtures();
+      lastLive=Date.now();
+      const played=MATCHES.filter(m=>m.st==='final').length;
+      const ts=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      if(stamp) stamp.innerHTML = played>0
+        ? `⚡ Live from <b>${res.src}</b> · ${played} results · updated ${ts}`
+        : `⚡ Live from <b>${res.src}</b> · no results posted yet · checked ${ts}`;
+    } else {
+      if(stamp) stamp.innerHTML='Showing saved snapshot · live feed loads on your hosted site';
+    }
   }catch(e){
     if(stamp) stamp.innerHTML='Showing saved snapshot · live feed loads on your hosted site';
   } finally { liveBusy=false; }
