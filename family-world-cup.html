@@ -148,6 +148,82 @@
     .rowMain{grid-template-columns:38px 1fr auto;gap:9px;padding:11px} .breakdown{padding-left:48px}
     .tab{font-size:12px;padding:9px 4px} .fam-row{flex-direction:column;gap:4px} .fam-row .ft{min-width:0}
   }
+  /* ===== Keepie-Uppie mini-game ===== */
+  .ball-fab{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;z-index:55;width:54px;height:54px;
+    border-radius:50%;border:none;cursor:pointer;font-size:30px;line-height:1;
+    background:radial-gradient(circle at 35% 30%, #fff, #d8e0d8 70%);
+    box-shadow:0 6px 18px rgba(0,0,0,.5), 0 0 0 2px rgba(198,255,62,.25);
+    display:grid;place-items:center;animation:fabBounce 2.4s ease-in-out infinite}
+  .ball-fab:hover{filter:brightness(1.05)}
+  .ball-fab .hint{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);white-space:nowrap;
+    font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--electric);opacity:0;transition:opacity .3s;pointer-events:none}
+  .ball-fab:hover .hint{opacity:.9}
+  @keyframes fabBounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-7px)}}
+  .ku-overlay{position:fixed;inset:0;z-index:90;display:none;overflow:hidden;touch-action:none;user-select:none}
+  .ku-overlay.on{display:block}
+  .ku-stadium{position:absolute;inset:0;background:
+    radial-gradient(120% 75% at 50% 118%, rgba(34,197,94,.20), transparent 55%),
+    linear-gradient(to bottom,#060a1a 0%,#0a1430 26%,#0b2236 48%,#0a2c1d 62%,#0c3a22 80%,#0e4a2a 100%)}
+  .ku-stadium::before{content:"";position:absolute;left:0;right:0;top:22%;height:42%;opacity:.55;
+    background:
+     radial-gradient(circle at 10% 50%, rgba(255,255,255,.13) 0 1.4px, transparent 2.4px) 0 0/12px 11px,
+     radial-gradient(circle at 50% 50%, rgba(255,210,63,.11) 0 1.4px, transparent 2.4px) 6px 5px/14px 12px,
+     radial-gradient(circle at 30% 50%, rgba(122,166,214,.11) 0 1.4px, transparent 2.4px) 4px 3px/10px 10px;
+    -webkit-mask-image:linear-gradient(to bottom,transparent,#000 26%,#000 82%,transparent);
+    mask-image:linear-gradient(to bottom,transparent,#000 26%,#000 82%,transparent)}
+  .ku-stadium::after{content:"";position:absolute;left:-10%;right:-10%;top:-14%;height:34%;
+    background:radial-gradient(closest-side, rgba(198,255,62,.18), transparent 70%);filter:blur(12px)}
+  .ku-lights{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  .ku-lights::before,.ku-lights::after{content:"";position:absolute;top:-10%;width:58%;height:118%;
+    background:radial-gradient(ellipse 55% 75% at 50% 0%, rgba(214,236,255,.18), rgba(214,236,255,.05) 42%, transparent 72%);
+    filter:blur(8px);transform-origin:top center}
+  .ku-lights::before{left:-14%;transform:rotate(17deg)} .ku-lights::after{right:-14%;transform:rotate(-17deg)}
+  .ku-lamp{position:absolute;top:9px;display:flex;gap:3px;pointer-events:none;z-index:1}
+  .ku-lamp.l{left:16px} .ku-lamp.r{right:16px}
+  .ku-lamp i{width:13px;height:9px;border-radius:2px;background:#eaf6ff;box-shadow:0 0 12px 3px rgba(214,236,255,.75);animation:lampflick 5s ease-in-out infinite}
+  @keyframes lampflick{0%,100%{opacity:1}48%{opacity:.92}50%{opacity:.7}52%{opacity:.95}}
+  .ku-flash{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;opacity:0;pointer-events:none;z-index:1;box-shadow:0 0 7px 2px rgba(255,255,255,.85);animation:kuflash 6s infinite}
+  .ku-flash.f1{top:30%;left:18%;animation-delay:.2s} .ku-flash.f2{top:38%;left:72%;animation-delay:1.4s}
+  .ku-flash.f3{top:33%;left:46%;animation-delay:2.6s} .ku-flash.f4{top:42%;left:28%;animation-delay:3.5s}
+  .ku-flash.f5{top:35%;left:84%;animation-delay:4.3s} .ku-flash.f6{top:44%;left:60%;animation-delay:5.1s}
+  @keyframes kuflash{0%,6%,100%{opacity:0}2%{opacity:1}}
+  .ku-board{position:absolute;left:0;right:0;bottom:70px;height:22px;overflow:hidden;pointer-events:none;
+    background:linear-gradient(90deg,#0a1f33,#114063,#0a1f33);border-top:1px solid rgba(255,255,255,.14);border-bottom:1px solid rgba(0,0,0,.5);box-shadow:0 0 14px rgba(17,64,99,.5)}
+  .ku-board .scroll{position:absolute;white-space:nowrap;font-family:"Anton";font-size:12px;line-height:22px;letter-spacing:.25em;text-transform:uppercase;color:rgba(198,255,62,.6);text-shadow:0 0 8px rgba(198,255,62,.4);animation:kuscroll 18s linear infinite}
+  @keyframes kuscroll{from{transform:translateX(60%)}to{transform:translateX(-100%)}}
+  .ku-pitch{position:absolute;left:0;right:0;bottom:0;height:70px;
+    background:repeating-linear-gradient(90deg,#0f6334 0 42px,#0c5429 42px 84px);
+    border-top:2px solid rgba(255,255,255,.3);box-shadow:0 -12px 34px rgba(0,0,0,.45) inset}
+  .ku-pitch::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,rgba(255,255,255,.08),transparent 45%)}
+  .ku-vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 92% 82% at 50% 40%, transparent 52%, rgba(0,0,0,.6) 100%)}
+  #kuCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:2}
+  .ku-top{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;z-index:3}
+  .ku-title{font-family:"Anton";text-transform:uppercase;letter-spacing:.5px;font-size:17px;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+  .ku-close{width:38px;height:38px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.3);color:#fff;font-size:20px;cursor:pointer}
+  .ku-score{position:absolute;top:60px;left:0;right:0;text-align:center;z-index:3;font-family:"Anton";font-size:84px;color:#fff;text-shadow:0 4px 16px rgba(0,0,0,.55);line-height:1;pointer-events:none}
+  .ku-best{position:absolute;top:150px;left:0;right:0;text-align:center;z-index:3;font-family:"DM Mono";font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--electric);pointer-events:none}
+  .ku-ole{position:absolute;top:38%;left:0;right:0;text-align:center;z-index:3;pointer-events:none;font-family:"Anton";font-size:46px;color:var(--gold);text-shadow:0 3px 14px rgba(0,0,0,.6);opacity:0}
+  .ku-ole.show{animation:ole .9s ease-out}
+  @keyframes ole{0%{opacity:0;transform:scale(.6)}25%{opacity:1;transform:scale(1.1)}70%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.2)}}
+  .ku-panel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:4;width:min(360px,90vw);
+    background:rgba(8,18,14,.82);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:20px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+  .ku-panel.hide{display:none}
+  .ku-h{font-family:"Anton";text-transform:uppercase;letter-spacing:.5px;font-size:22px;color:#fff;margin:0 0 4px}
+  .ku-sub{font-size:13px;color:var(--ink-soft);margin:0 0 14px}
+  .ku-name{display:flex;gap:8px;align-items:center;justify-content:center;margin:0 0 14px}
+  .ku-name select{flex:1;max-width:200px;background:rgba(6,18,13,.7);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:9px 10px;font-family:inherit;font-size:14px}
+  .ku-play{width:100%;font-family:"Anton";text-transform:uppercase;letter-spacing:.6px;font-size:20px;color:#04140b;background:var(--electric);border:none;border-radius:12px;padding:13px;cursor:pointer;box-shadow:0 8px 22px rgba(198,255,62,.3)}
+  .ku-play:active{transform:translateY(1px)}
+  .ku-lb{margin-top:16px;text-align:left}
+  .ku-lb h4{font-family:"DM Mono";font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;display:flex;justify-content:space-between}
+  .ku-lb .exp{color:var(--electric);cursor:pointer}
+  .ku-lb .sync{font-size:9px;letter-spacing:.08em;margin-left:4px;font-weight:400}
+  .ku-lb-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-top:1px dashed var(--line);font-size:13px}
+  .ku-lb-row:first-of-type{border-top:none}
+  .ku-lb-row .r{font-family:"Anton";width:20px;color:var(--muted);text-align:center}
+  .ku-lb-row.champ .r{color:var(--gold)} .ku-lb-row .nm{flex:1;color:var(--ink-soft)} .ku-lb-row.me .nm{color:var(--electric)}
+  .ku-lb-row .sc{font-family:"DM Mono";color:var(--ink)}
+  .ku-empty{font-size:12px;color:var(--muted);padding:6px 0}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -158,7 +234,7 @@
       <div><h1>Family World Cup '26</h1><div class="sub">Sweepstake · Live Hub</div></div></div>
     <span class="live"><span class="dot"></span>Live</span>
   </header>
-  <div class="stamp">Results as of <b>Sat 20 Jun 2026</b> · Group stage</div>
+  <div class="stamp" id="stamp">Results as of <b>Sat 20 Jun 2026</b> · Group stage</div>
   <div class="tabs">
     <button class="tab on" data-tab="board">🏆 Leaderboard</button>
     <button class="tab" data-tab="results">📋 Results</button>
@@ -200,6 +276,29 @@
 
   <footer>Live hub built from real World Cup results · bronze underdogs earn bonus points.<br>
     <b>Snapshot:</b> ask to refresh anytime for the newest scores and fixtures.</footer>
+</div>
+<button class="ball-fab" id="ballFab" aria-label="Play keepie-uppie"><span>⚽</span><span class="hint">keepie-uppie</span></button>
+<div class="ku-overlay" id="kuOverlay" aria-hidden="true">
+  <div class="ku-stadium"></div>
+  <div class="ku-lights"></div>
+  <div class="ku-lamp l"><i></i><i></i><i></i></div>
+  <div class="ku-lamp r"><i></i><i></i><i></i></div>
+  <div class="ku-flash f1"></div><div class="ku-flash f2"></div><div class="ku-flash f3"></div><div class="ku-flash f4"></div><div class="ku-flash f5"></div><div class="ku-flash f6"></div>
+  <div class="ku-board"><div class="scroll">★ Family World Cup 2026 ★ Olé Olé Olé ★ Keepie-Uppie Cup ★ Family World Cup 2026 ★ Olé Olé Olé ★ Keepie-Uppie Cup ★&nbsp;</div></div>
+  <div class="ku-pitch"></div>
+  <canvas id="kuCanvas"></canvas>
+  <div class="ku-vignette"></div>
+  <div class="ku-top"><div class="ku-title">🏆 Keepie-Uppie Cup</div><button class="ku-close" id="kuClose" aria-label="Close">×</button></div>
+  <div class="ku-score" id="kuScore">0</div>
+  <div class="ku-best" id="kuBest"></div>
+  <div class="ku-ole" id="kuOle">OLÉ!</div>
+  <div class="ku-panel" id="kuPanel">
+    <h3 class="ku-h" id="kuPanelH">Keepie-Uppie Cup</h3>
+    <p class="ku-sub" id="kuPanelSub">Tap the ball to keep it off the pitch. How many touches can you get?</p>
+    <div class="ku-name"><label style="font-size:13px;color:var(--muted)">Player</label><select id="kuName"></select></div>
+    <button class="ku-play" id="kuPlay">Kick off ⚽</button>
+    <div class="ku-lb"><h4><span>Champion standings <span class="sync" id="kuSync"></span></span> <span class="exp" id="kuExport">copy</span></h4><div id="kuBoard"></div></div>
+  </div>
 </div>
 <canvas id="confetti"></canvas>
 
@@ -310,13 +409,19 @@ const MATCHES = [
 /* ===== Derive team records + reds from the full match list ===== */
 const T = {};
 function ensureT(t){ if(!T[t]) T[t]={w:0,d:0,l:0,red:0,og:false,qf:false,champ:false}; return T[t]; }
-MATCHES.filter(m=>m.st==="final").forEach(m=>{
-  const A=ensureT(m.a),B=ensureT(m.b);
-  if(m.as>m.bs){A.w++;B.l++;} else if(m.as<m.bs){A.l++;B.w++;} else {A.d++;B.d++;}
-  (m.cards||[]).forEach(c=>{ if(c.t==="R") ensureT(c.s==="a"?m.a:m.b).red++; });
-});
-/* qualification (out of groups) — confirmed for USA */
-if(T["USA"]) T["USA"].og=true;
+/* Progression bonuses are NOT in the free live feed — maintain them here by hand.
+   og = out of groups (+15), qf = reached quarterfinal (+15), champ = winner (+30). */
+const PROG = { "USA":{og:true} };
+function deriveT(){
+  for(const k in T) delete T[k];
+  MATCHES.filter(m=>m.st==="final").forEach(m=>{
+    const A=ensureT(m.a),B=ensureT(m.b);
+    if(m.as>m.bs){A.w++;B.l++;} else if(m.as<m.bs){A.l++;B.w++;} else {A.d++;B.d++;}
+    (m.cards||[]).forEach(c=>{ if(c.t==="R") ensureT(c.s==="a"?m.a:m.b).red++; });
+  });
+  for(const t in PROG) Object.assign(ensureT(t),PROG[t]);
+}
+deriveT();
 const stat = t => T[t] || {w:0,d:0,l:0,red:0,og:false,qf:false,champ:false};
 
 /* ===== Scoring ===== */
@@ -470,7 +575,166 @@ function tick(){cx.clearRect(0,0,cv.width,cv.height);
   parts.forEach(p=>{p.vy+=.32;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;p.life-=.012;cx.save();cx.globalAlpha=Math.max(0,p.life);cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);cx.restore();});
   parts=parts.filter(p=>p.life>0&&p.y<cv.height+40);if(parts.length)raf=requestAnimationFrame(tick);else raf=null;}
 
+/* ===== Keepie-Uppie mini-game ===== */
+(function(){
+  const fab=document.getElementById('ballFab'),ov=document.getElementById('kuOverlay'),cv=document.getElementById('kuCanvas');
+  if(!cv) return; const ctx=cv.getContext('2d');
+  const scoreEl=document.getElementById('kuScore'),bestEl=document.getElementById('kuBest'),oleEl=document.getElementById('kuOle');
+  const panel=document.getElementById('kuPanel'),panelH=document.getElementById('kuPanelH'),panelSub=document.getElementById('kuPanelSub');
+  const playBtn=document.getElementById('kuPlay'),closeBtn=document.getElementById('kuClose'),nameSel=document.getElementById('kuName');
+  const boardEl=document.getElementById('kuBoard'),exportBtn=document.getElementById('kuExport');
+  const KEY='wc2026:juggle',MEKEY='wc2026:juggle:me';
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const NAMES=PLAYERS.map(p=>p.name);
+  let scores={},me='Guest',W=0,H=0,dpr=1,ball=null,count=0,best=0,g=0.34,playing=false,raf=0,conf=[];
+  nameSel.innerHTML=['Guest',...NAMES].map(n=>`<option>${n}</option>`).join('');
+
+  /* ── Supabase (shared leaderboard) ───────────────────────────────
+     Paste your project URL + anon (public) key to enable a LIVE board
+     shared across everyone — works on GitHub Pages. Leave blank to
+     fall back to per-device storage. Table SQL is in the chat notes. */
+  const SUPABASE_URL='https://tbsewclcesggxaqfvmbm.supabase.co';
+  const SUPABASE_ANON_KEY='sb_publishable_ibYsuOp_XMzStXuzwjNzaA_3sAemrrn';
+  const SB=!!(SUPABASE_URL&&SUPABASE_ANON_KEY);
+  let usingSB=false;
+  const sbHeaders=ex=>Object.assign({apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,'Content-Type':'application/json'},ex||{});
+  async function sbLoad(){
+    const r=await fetch(`${SUPABASE_URL}/rest/v1/juggle_scores?select=name,score&order=score.desc&limit=500`,{headers:sbHeaders()});
+    if(!r.ok)throw new Error('sb load '+r.status);
+    const rows=await r.json(),m={};rows.forEach(x=>{const n=x.name,s=+x.score||0;if(n&&s)m[n]=Math.max(m[n]||0,s);});return m;
+  }
+  async function sbSave(name,score){
+    const r=await fetch(`${SUPABASE_URL}/rest/v1/juggle_scores`,{method:'POST',headers:sbHeaders({Prefer:'return=minimal'}),body:JSON.stringify({name,score})});
+    if(!r.ok)throw new Error('sb save '+r.status);
+  }
+  const mergeMax=(a,b)=>{const o=Object.assign({},a);for(const k in b){const v=+b[k]||0;if(v)o[k]=Math.max(o[k]||0,v);}return o;};
+  function setSync(){const el=document.getElementById('kuSync');if(!el)return;el.textContent=usingSB?'● live':(window.storage?'● shared':'● this device');el.style.color=usingSB?'var(--grass)':'var(--muted)';}
+  async function load(){
+    let d={};
+    if(SB){try{d=mergeMax(d,await sbLoad());usingSB=true;}catch(e){usingSB=false;}}
+    try{const r=await fetch('scores.json',{cache:'no-store'});if(r.ok){const j=await r.json();d=mergeMax(d,j.scores||j);}}catch(e){}
+    try{if(window.storage&&window.storage.get){const r=await window.storage.get(KEY,true);if(r&&r.value)d=mergeMax(d,JSON.parse(r.value));}}catch(e){}
+    try{const s=localStorage.getItem(KEY);if(s)d=mergeMax(d,JSON.parse(s));}catch(e){}
+    scores=d;
+    try{const m=localStorage.getItem(MEKEY);if(m&&(m==='Guest'||NAMES.includes(m)))me=m;}catch(e){}
+    nameSel.value=me;best=scores[me]||0;renderBoard();updateBest();setSync();
+  }
+  async function saveScore(name,score){
+    scores[name]=Math.max(scores[name]||0,score);
+    try{localStorage.setItem(KEY,JSON.stringify(scores));}catch(e){}
+    try{if(window.storage&&window.storage.set)await window.storage.set(KEY,JSON.stringify(scores),true);}catch(e){}
+    if(SB){try{await sbSave(name,score);usingSB=true;const fresh=await sbLoad();scores=mergeMax(scores,fresh);}catch(e){usingSB=false;}}
+    renderBoard();setSync();
+  }
+  function renderBoard(){
+    const arr=Object.keys(scores).map(n=>[n,scores[n]]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    boardEl.innerHTML=arr.length?arr.map((x,i)=>`<div class="ku-lb-row ${i===0?'champ':''} ${x[0]===me?'me':''}"><span class="r">${i===0?'🏆':i+1}</span><span class="nm">${x[0]}</span><span class="sc">${x[1]}</span></div>`).join(''):'<div class="ku-empty">No champions yet — be the first to set a score!</div>';
+  }
+  function updateBest(){bestEl.textContent=best>0?`${me} best · ${best}`:'';}
+  function sizeCanvas(){const r=ov.getBoundingClientRect();W=r.width;H=r.height;dpr=Math.min(window.devicePixelRatio||1,2);cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
+  const GROUND=()=>H-70;
+  function open(){ov.classList.add('on');ov.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';sizeCanvas();me=nameSel.value;best=scores[me]||0;updateBest();showPanel('Keepie-Uppie Cup','Tap the ball to keep it off the pitch. How many touches can you get?');drawIdle();}
+  function close(){playing=false;cancelAnimationFrame(raf);ov.classList.remove('on');ov.setAttribute('aria-hidden','true');document.body.style.overflow='';}
+  function showPanel(h,s){panelH.textContent=h;panelSub.textContent=s;panel.classList.remove('hide');renderBoard();}
+  function hidePanel(){panel.classList.add('hide');}
+  function start(){
+    me=nameSel.value;best=scores[me]||0;updateBest();try{localStorage.setItem(MEKEY,me);}catch(e){}
+    count=0;g=0.20;conf=[];ball={x:W/2,y:H*0.42,vx:(Math.random()-.5)*1.5,vy:-6.5,r:Math.max(34,Math.min(50,W*0.10))};
+    playing=true;hidePanel();scoreEl.textContent='0';cancelAnimationFrame(raf);loop();
+  }
+  function gameOver(){
+    playing=false;
+    const champBefore=Object.keys(scores).reduce((mx,k)=>Math.max(mx,scores[k]),0);
+    const isBest=count>best;
+    if(count>0){saveScore(me,count);}
+    best=scores[me]||0;updateBest();
+    const isChamp=count>0&&count>champBefore;
+    const h=count>0?`${count} touch${count===1?'':'es'}!`:'Ball down!';
+    const s=isChamp?'👑 New all-time champion!':isBest&&count>0?'⭐ New personal best!':'Tap kick off to try again.';
+    if((isBest||isChamp)&&count>0&&!reduce)confettiBurst();
+    showPanel(h,s);renderBoard();
+  }
+  function kick(px,py){
+    if(!playing||!ball)return false;
+    const dx=px-ball.x,dy=py-ball.y,tol=ball.r*2.5;
+    if(dx*dx+dy*dy<=tol*tol){
+      ball.vy=-9.2;ball.vx+=dx*0.035+(Math.random()-.5)*0.9;ball.vx=Math.max(-4,Math.min(4,ball.vx));
+      count++;scoreEl.textContent=count;
+      if(count%14===0)g=Math.min(g*1.04,0.40);
+      if(count%10===0)showOle();
+      return true;
+    }
+    return false;
+  }
+  function showOle(){if(reduce)return;const w=['OLÉ!','GOAL!','MAGIC!','BRAVO!','🔥'];oleEl.textContent=w[Math.floor(Math.random()*w.length)];oleEl.classList.remove('show');void oleEl.offsetWidth;oleEl.classList.add('show');}
+  function loop(){
+    if(!playing)return;
+    ball.vy+=g;ball.y+=ball.vy;ball.x+=ball.vx;
+    if(ball.x<ball.r){ball.x=ball.r;ball.vx=Math.abs(ball.vx);}
+    if(ball.x>W-ball.r){ball.x=W-ball.r;ball.vx=-Math.abs(ball.vx);}
+    if(ball.y-ball.r<0){ball.y=ball.r;ball.vy=Math.abs(ball.vy)*0.55;}
+    if(ball.y+ball.r>=GROUND()){ball.y=GROUND()-ball.r;draw();gameOver();return;}
+    draw();raf=requestAnimationFrame(loop);
+  }
+  function drawBall(){
+    const gy=GROUND(),h=Math.max(0,Math.min(1,(gy-ball.y)/(H*0.6))),sw=ball.r*(1.6-0.7*h);
+    ctx.save();ctx.globalAlpha=0.28*(1-0.4*h);ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(ball.x,gy-4,sw,sw*0.32,0,0,7);ctx.fill();ctx.restore();
+    ctx.font=`${ball.r*2}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('⚽',ball.x,ball.y);
+  }
+  function draw(){ctx.clearRect(0,0,W,H);drawConfetti();if(ball)drawBall();}
+  function drawIdle(){ctx.clearRect(0,0,W,H);ctx.font=`${Math.max(64,W*0.15)}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.globalAlpha=0.25;ctx.fillText('⚽',W/2,H*0.32);ctx.globalAlpha=1;}
+  function confettiBurst(){const cols=['#ffd23f','#c6ff3e','#22c55e','#fff','#e08e4d'];for(let i=0;i<120;i++)conf.push({x:W/2+(Math.random()-.5)*120,y:H*0.3,vx:(Math.random()-.5)*8,vy:Math.random()*-10-2,s:Math.random()*7+3,c:cols[i%cols.length],r:Math.random()*6,vr:(Math.random()-.5)*.4,life:1});if(!playing)animConf();}
+  function animConf(){if(playing)return;ctx.clearRect(0,0,W,H);drawConfetti();if(ball)drawBall();if(conf.length)requestAnimationFrame(animConf);}
+  function drawConfetti(){if(!conf.length)return;for(const p of conf){p.vy+=.3;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;p.life-=.012;ctx.save();ctx.globalAlpha=Math.max(0,p.life);ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.c;ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);ctx.restore();}conf=conf.filter(p=>p.life>0&&p.y<H+40);}
+  fab.addEventListener('click',open);
+  closeBtn.addEventListener('click',close);
+  playBtn.addEventListener('click',start);
+  nameSel.addEventListener('change',()=>{me=nameSel.value;best=scores[me]||0;updateBest();renderBoard();});
+  cv.addEventListener('pointerdown',e=>{if(!playing)return;const r=cv.getBoundingClientRect();kick(e.clientX-r.left,e.clientY-r.top);});
+  window.addEventListener('resize',()=>{if(ov.classList.contains('on'))sizeCanvas();});
+  window.addEventListener('keydown',e=>{if(e.key==='Escape'&&ov.classList.contains('on'))close();});
+  exportBtn.addEventListener('click',()=>{const txt=JSON.stringify({scores},null,2);try{navigator.clipboard.writeText(txt);exportBtn.textContent='copied!';setTimeout(()=>exportBtn.textContent='copy',1200);}catch(e){alert(txt);}});
+  load();
+})();
+
+/* ===== Live match data (free, no API key) — openfootball via jsDelivr CDN =====
+   Scores + goalscorers auto-update from the feed and override our saved data.
+   Red cards and progression bonuses are NOT in this free feed, so those stay
+   manual (edit cards[] in MATCHES and the PROG map above). If the fetch fails
+   (e.g. offline preview), the page just keeps showing the last saved data. */
+const LIVE_URL='https://cdn.jsdelivr.net/gh/openfootball/worldcup.json@master/2026/worldcup.json';
+const OF2OURS={"Czech Republic":"Czechia","Bosnia & Herzegovina":"Bosnia","Turkey":"Türkiye","Cape Verde":"Cabo Verde","United States":"USA"};
+const mapTeam=n=>OF2OURS[n]||n;
+function parseLiveGoals(g1,g2){
+  const o=[];
+  (g1||[]).forEach(x=>o.push({s:"a",n:x.name||"",m:x.minute!=null?String(x.minute):undefined,x:x.owngoal?"OG":x.penalty?"pen":undefined}));
+  (g2||[]).forEach(x=>o.push({s:"b",n:x.name||"",m:x.minute!=null?String(x.minute):undefined,x:x.owngoal?"OG":x.penalty?"pen":undefined}));
+  return o;
+}
+async function refreshLive(){
+  const stamp=document.getElementById('stamp');
+  try{
+    const r=await fetch(LIVE_URL,{cache:'no-store'});
+    if(!r.ok) throw new Error('http '+r.status);
+    const data=await r.json();
+    const idx={};
+    (data.matches||[]).forEach(m=>{
+      if(!m.score||!m.score.ft) return;                 // a match only carries a score once played
+      idx[mapTeam(m.team1)+'|'+mapTeam(m.team2)]={as:+m.score.ft[0],bs:+m.score.ft[1],goals:parseLiveGoals(m.goals1,m.goals2)};
+    });
+    let n=0;
+    MATCHES.forEach(m=>{const h=idx[m.a+'|'+m.b];if(h){m.as=h.as;m.bs=h.bs;m.st="final";if(h.goals&&h.goals.length)m.goals=h.goals;n++;}});
+    deriveT();renderBoard();renderResults();renderFixtures();
+    if(stamp) stamp.innerHTML = n>0
+      ? `⚡ Auto-updated from <b>openfootball</b> · ${n} live results · ${new Date().toLocaleDateString()}`
+      : `⚡ Live feed connected · no new results posted yet · showing latest saved`;
+  }catch(e){
+    if(stamp) stamp.innerHTML='Showing saved snapshot · live feed loads on your hosted site';
+  }
+}
+
 renderBoard();renderResults();renderFixtures();
+refreshLive();
 setTimeout(burst,450);
 </script>
 </body>
