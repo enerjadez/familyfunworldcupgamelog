@@ -804,13 +804,25 @@ const OF2OURS={
   "Curacao":"Curaçao"
 };
 const mapTeam=n=>OF2OURS[n]||n;
-/* Manual red/yellow cards (not in the free feed) keyed by "TeamA|TeamB".
-   Only reds affect scoring. Add/adjust here as the tournament goes on. */
+/* Latest red cards (not carried by the live feeds — sourced from match reports).
+   Keyed by the two teams in ANY order; each card names the team it belongs to,
+   so the feed's home/away ordering doesn't matter. Only reds (t:"R") affect
+   scoring (−1 to that team's owners). Update as more games are played. */
 const CARDS={
-  "Mexico|South Africa":[{s:"b",n:"Sithole",t:"R"},{s:"b",n:"Zwane",t:"R"},{s:"a",n:"C. Montes",t:"R"}],
-  "Switzerland|Bosnia":[{s:"b",n:"Muharemović",t:"R",m:"80"}],
-  "Canada|Qatar":[{s:"b",n:"H. Ahmed",t:"R",m:"33"},{s:"b",n:"Madibo",t:"R",m:"51"}]
+  "Mexico|South Africa":[
+    {team:"South Africa",n:"Sithole",t:"R"},
+    {team:"South Africa",n:"Zwane",t:"R"},
+    {team:"Mexico",n:"C. Montes",t:"R"}
+  ],
+  "Bosnia|Switzerland":[{team:"Bosnia",n:"Muharemović",t:"R",m:"70"}],
+  "Canada|Qatar":[{team:"Qatar",n:"H. Ahmed",t:"R"},{team:"Qatar",n:"Madibo",t:"R"}],
+  "Belgium|Iran":[{team:"Belgium",n:"Ngoy",t:"R",m:"67"}],
+  "Paraguay|Türkiye":[{team:"Paraguay",n:"Almirón",t:"R",m:"45"}]
 };
+function cardsFor(a,b){
+  const list=CARDS[a+'|'+b]||CARDS[b+'|'+a]||[];
+  return list.map(c=>({ s:c.team===a?'a':c.team===b?'b':(c.s||'a'), n:c.n, t:c.t, m:c.m }));
+}
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 function formatDay(d){ if(!d) return ''; const p=String(d).split('-').map(Number); const dt=new Date(p[0],(p[1]||1)-1,p[2]||1); return `${WD[dt.getDay()]} ${p[2]} ${MON[(p[1]||1)-1]}`; }
 function cleanTime(t){ return (t||'').split(' ')[0]; }
@@ -840,7 +852,7 @@ function buildFromOF(data){
     out.push({ date:sa?sa.date:(m.date||''), t:sa?sa.t:cleanTime(m.time), day:sa?sa.day:formatDay(m.date), round:m.round||'', group:m.group||'',
       st:played?'final':'scheduled', a, b,
       as:played?d.as:undefined, bs:played?d.bs:undefined, win:played?d.win:null, note:played?d.note:'',
-      goals:played?parseLiveGoals(m.goals1,m.goals2):[], cards:CARDS[a+'|'+b]||[] });
+      goals:played?parseLiveGoals(m.goals1,m.goals2):[], cards:cardsFor(a,b) });
   });
   out.sort((x,y)=> x.date<y.date?-1:x.date>y.date?1:(x.t<y.t?-1:x.t>y.t?1:0));
   return out;
@@ -880,7 +892,7 @@ function buildFromWC26(data){
       round:isGroup?'':stage, group:isGroup?('Group '+String(grp||'').replace(/group\s*/i,'').trim()):'',
       st:played?'final':'scheduled', a, b,
       as:played?+hs:undefined, bs:played?+as_:undefined, win:null, note:'',
-      goals:[], cards:CARDS[a+'|'+b]||[] });
+      goals:[], cards:cardsFor(a,b) });
   });
   out.sort((x,y)=> x.date<y.date?-1:x.date>y.date?1:(x.t<y.t?-1:x.t>y.t?1:0));
   return out;
