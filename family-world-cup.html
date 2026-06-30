@@ -1305,15 +1305,18 @@ const isOurTeam=t=>FAMILY_TEAMS.has(t);
 let SCORERS=[];
 /* Assists aren't carried by any free live feed — maintained by hand.
    Update names/numbers here as the tournament goes on. */
-const ASSISTS_ASOF="as of 24 Jun, group stage";
+const ASSISTS_ASOF="as of 29 Jun, Round of 32";
 const ASSISTS=[
-  {name:"A. Isak",team:"Sweden",a:2},
-  {name:"D. Undav",team:"Germany",a:2},
+  {name:"M. Olise",team:"France",a:3},
+  {name:"A. Isak",team:"Sweden",a:3},
+  {name:"B. Guimarães",team:"Brazil",a:3},
+  {name:"K. Mbappé",team:"France",a:2},
   {name:"J. Kimmich",team:"Germany",a:2},
+  {name:"D. Undav",team:"Germany",a:2},
   {name:"J. Enciso",team:"Paraguay",a:2},
-  {name:"R. Rezaeian",team:"Iran",a:1},
-  {name:"L. Díaz",team:"Colombia",a:1},
-  {name:"N. Saliba",team:"Canada",a:1}
+  {name:"M. Salah",team:"Egypt",a:2},
+  {name:"C. Wood",team:"New Zealand",a:2},
+  {name:"N. Saliba",team:"Canada",a:2}
 ];
 async function fetchOF(){
   const urls=[`https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json?_=${Date.now()}`,
