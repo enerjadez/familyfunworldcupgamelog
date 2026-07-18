@@ -14,7 +14,6 @@
     --ink:#eef6ee; --ink-soft:#bcd6c7; --muted:#7fa893;
     --grass:#22c55e; --electric:#c6ff3e; --sky:#7aa6d6;
     --gold:#ffd23f; --silver:#cdd7df; --bronze:#e08e4d; --danger:#ff5d5d; --yellow:#facc15;
-    --card:var(--surface);
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
@@ -38,20 +37,7 @@
   .live{display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--electric);font-weight:700}
   .live .dot{width:8px;height:8px;border-radius:50%;background:var(--electric);box-shadow:0 0 0 0 rgba(198,255,62,.7);animation:pulse 1.8s infinite}
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(198,255,62,.55)}70%{box-shadow:0 0 0 9px rgba(198,255,62,0)}100%{box-shadow:0 0 0 0 rgba(198,255,62,0)}}
-  .stamp{font-size:11px;color:var(--muted);text-align:right} .stamp b{color:var(--ink-soft)}
-  .stamprow{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin:2px 4px 14px;flex-wrap:wrap}
-  .srcpick{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 8px 3px 9px;background:rgba(8,20,14,.6);cursor:pointer}
-  .srcpick-ic{font-size:11px;line-height:1}
-  .srcpick select{background:none;border:none;color:var(--ink-soft);font-family:inherit;font-size:11px;cursor:pointer;outline:none}
-  .srcpick select option{background:var(--surface-2);color:var(--ink)}
-  /* ===== Live match tab ===== */
-  .livecard{border:1px solid rgba(255,93,93,.4);border-radius:16px;padding:14px 16px 16px;margin-bottom:12px;
-    background:linear-gradient(to right,rgba(255,93,93,.06),var(--surface))}
-  .livebadge{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--danger)}
-  .livebadge .dot{width:7px;height:7px;border-radius:50%;background:var(--danger);box-shadow:0 0 0 0 rgba(255,93,93,.6);animation:pulse2 1.6s infinite}
-  @keyframes pulse2{0%{box-shadow:0 0 0 0 rgba(255,93,93,.55)}70%{box-shadow:0 0 0 8px rgba(255,93,93,0)}100%{box-shadow:0 0 0 0 rgba(255,93,93,0)}}
-  .liveclock{font-family:"DM Mono",monospace;font-size:11.5px;color:var(--ink-soft)}
-  .livecard .scoreline{margin:12px 0 4px}
+  .stamp{font-size:11px;color:var(--muted);margin:2px 4px 14px;text-align:right} .stamp b{color:var(--ink-soft)}
   .tabs{display:flex;gap:5px;margin:0 0 18px;background:rgba(8,20,14,.6);border:1px solid var(--line);border-radius:999px;padding:5px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
   .tabs::-webkit-scrollbar{display:none}
   .tab{flex:1 0 auto;text-align:center;padding:9px 12px;border-radius:999px;font-weight:700;font-size:13px;color:var(--muted);cursor:pointer;border:none;background:none;font-family:inherit;letter-spacing:.02em;white-space:nowrap;transition:color .15s}
@@ -78,12 +64,6 @@
   .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:0 4px 12px}
   .sec-head h2{font-family:"Anton";font-weight:400;text-transform:uppercase;letter-spacing:.5px;font-size:16px;margin:0}
   .sec-head .hint{font-size:12px;color:var(--muted);white-space:nowrap;flex:none}
-  /* ===== Whole-card fold (collapse an entire section, not just its rows) ===== */
-  .foldhead{cursor:pointer;user-select:none}
-  .foldchev{font-size:11px;color:var(--muted);flex:none;transition:transform .2s}
-  .cardfold.collapsed .foldchev{transform:rotate(-90deg)}
-  .cardfold.collapsed .foldhead{margin-bottom:0}
-  .cardfold.collapsed .cardfold-body{display:none}
   .board{display:flex;flex-direction:column;gap:8px}
   .row{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:linear-gradient(to right, var(--surface), rgba(10,28,20,.6))}
   .row.lead{border-color:rgba(255,210,63,.5);background:linear-gradient(to right, rgba(255,210,63,.08), var(--surface))}
@@ -266,18 +246,8 @@
   /* ===== Scorers / assists tab ===== */
   .hint.manual{color:#e0a04d}
   .statbox{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-  .srow{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:row;align-items:center;gap:12px;padding:10px 14px;border-top:1px solid var(--line)}
+  .srow{display:flex;flex-direction:row;align-items:center;gap:12px;padding:10px 14px;border-top:1px solid var(--line)}
   .srow:first-child{border-top:none}
-  .srow::before{content:attr(data-flag);position:absolute;z-index:0;right:-6px;top:50%;font-size:72px;line-height:1;
-    opacity:.14;filter:saturate(1.3) blur(.2px);transform:translateY(-50%) rotate(-8deg) scale(1);
-    animation:flagDrift 7s ease-in-out infinite;pointer-events:none}
-  .srow::after{content:"";position:absolute;z-index:0;inset:0;pointer-events:none;
-    background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.10) 45%,rgba(255,255,255,.16) 50%,rgba(255,255,255,.10) 55%,transparent 70%);
-    transform:translateX(-130%);animation:flagShine 5.5s ease-in-out infinite}
-  .srow.pfam::before{opacity:.22}
-  .srow>*{position:relative;z-index:1}
-  @keyframes flagDrift{0%,100%{transform:translateY(-50%) rotate(-8deg) scale(1)}50%{transform:translateY(-54%) rotate(-3deg) scale(1.08)}}
-  @keyframes flagShine{0%{transform:translateX(-130%)}55%,100%{transform:translateX(130%)}}
   .srow .srk{font-family:"Anton";font-size:15px;color:var(--muted);width:26px;text-align:center;flex:none}
   .srow .srk.medal{font-size:18px}
   .ava{position:relative;width:40px;height:40px;border-radius:50%;overflow:hidden;background:#0e2018;display:grid;place-items:center;border:1.5px solid var(--line);flex:none}
@@ -297,11 +267,8 @@
   .glegend .lg::before{content:"";width:10px;height:10px;border-radius:2px;background:var(--line)}
   .glegend .lg.q::before{background:var(--electric)} .glegend .lg.q3::before{background:#e0a04d} .glegend .lg.o::before{background:#3a4a40}
   .grp{margin-bottom:15px}
-  .grp-h{margin:0 2px 7px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+  .grp-h{margin:0 2px 7px}
   .grp-h h3{font-family:"Anton";font-weight:400;text-transform:uppercase;letter-spacing:.5px;font-size:14px;margin:0;color:var(--ink-soft)}
-  .grp-h .chev{font-size:11px;color:var(--muted);transition:transform .2s}
-  .grp.collapsed .chev{transform:rotate(-90deg)}
-  .grp.collapsed .gtable{display:none}
   .gtable{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
   .gt-row{display:grid;grid-template-columns:22px 1fr 24px 22px 22px 22px 34px 30px;align-items:center;gap:4px;padding:8px 10px;border-top:1px solid var(--line);font-size:13px}
   .gt-row:first-child{border-top:none}
@@ -317,27 +284,6 @@
   .gt-row.pfam .gtn{color:var(--electric);font-weight:600}
   .gt-row.gout .gtn{text-decoration:line-through}
   @media(max-width:560px){ .gt-row{grid-template-columns:20px 1fr 26px 34px 28px;gap:3px;padding:8px} .gt-row .wdl{display:none} }
-  /* ===== Knockout bracket ===== */
-  .bracket{display:flex;gap:14px;overflow-x:auto;padding:2px 2px 10px;scrollbar-width:thin}
-  .bcol{flex:0 0 172px;display:flex;flex-direction:column;gap:10px;transition:flex-basis .18s}
-  .bcol-h{font-family:"DM Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
-    display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;user-select:none;padding:4px 0}
-  .bcol-h .chev{font-size:9px;transition:transform .2s;flex:none}
-  .bcol.collapsed{flex-basis:96px}
-  .bcol.collapsed .chev{transform:rotate(-90deg)}
-  .bcol.collapsed .bm{display:none}
-  .bcol.collapsed .bcol-h{color:var(--electric)}
-  .bm{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:linear-gradient(to right,var(--surface),rgba(10,28,20,.6))}
-  .bm.bm-fam-match{border-color:rgba(198,255,62,.4)}
-  .bm-side{display:flex;align-items:center;gap:6px;padding:7px 9px;font-size:12.5px;border-bottom:1px dashed var(--line)}
-  .bm-side:last-child{border-bottom:none}
-  .bm-fl{font-size:14px;line-height:1;flex:none}
-  .bm-nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-soft)}
-  .bm-side.bm-win .bm-nm{color:var(--ink);font-weight:600}
-  .bm-side.bm-fam .bm-nm{color:var(--electric)}
-  .bm-side.bm-tbd-side .bm-nm{color:var(--muted);font-style:italic}
-  .bm-sc{font-family:"DM Mono",monospace;font-size:12px;color:var(--ink-soft);flex:none}
-  .bm-side.bm-win .bm-sc{color:var(--ink)}
 </style>
 </head>
 <body>
@@ -347,20 +293,9 @@
       <div><h1>Family World Cup '26</h1><div class="sub">Sweepstake · Live Hub</div></div></div>
     <span class="live"><span class="dot"></span>Live</span>
   </header>
-  <div class="stamprow">
-    <div class="stamp" id="stamp">Results as of <b>Sat 20 Jun 2026</b> · Group stage</div>
-    <label class="srcpick" title="Choose which live feed to fetch from">
-      <span class="srcpick-ic">⇄</span>
-      <select id="sourceSelect">
-        <option value="">Auto (try all)</option>
-        <option value="worldcup26.ir">worldcup26.ir</option>
-        <option value="openfootball">openfootball</option>
-      </select>
-    </label>
-  </div>
+  <div class="stamp" id="stamp">Results as of <b>Sat 20 Jun 2026</b> · Group stage</div>
   <div class="tabs">
     <button class="tab on" data-tab="board"><span class="tabi">🏆</span> Leaderboard</button>
-    <button class="tab" data-tab="live"><span class="tabi">🔴</span> Live</button>
     <button class="tab" data-tab="results"><span class="tabi">📋</span> Results</button>
     <button class="tab" data-tab="fixtures"><span class="tabi">📅</span> Fixtures</button>
     <button class="tab" data-tab="groups"><span class="tabi">🗂️</span> Groups</button>
@@ -388,12 +323,6 @@
     </div></section>
   </section>
 
-  <section class="panel" id="panel-live">
-    <div class="sec-head"><h2>🔴 Live now</h2><span class="hint" id="liveNote">checking…</span></div>
-    <div id="liveList"></div>
-    <footer>Shows only matches currently in progress, with the latest score and any goals/cards reported so far. Nothing here counts toward the leaderboard until full time.</footer>
-  </section>
-
   <section class="panel" id="panel-results">
     <div class="sec-head"><h2>All results</h2><span class="hint">From the opening match</span></div>
     <div id="resultsList"></div>
@@ -407,26 +336,10 @@
   </section>
 
   <section class="panel" id="panel-groups">
-    <div class="cardfold">
-      <div class="sec-head foldhead" onclick="this.closest('.cardfold').classList.toggle('collapsed')">
-        <h2>Group tables</h2><span class="hint" id="groupsNote">live</span><span class="foldchev">▾</span>
-      </div>
-      <div class="cardfold-body">
-        <div class="glegend"><span class="lg q">Through</span><span class="lg q3">3rd-place watch</span><span class="lg o">Eliminated</span></div>
-        <div id="groupsList"></div>
-        <footer>Standings are computed live from results — won 3, drawn 1. Top two of each group advance, plus the eight best third-placed teams. Your family teams are highlighted.</footer>
-      </div>
-    </div>
-
-    <div class="cardfold" style="margin-top:24px">
-      <div class="sec-head foldhead" onclick="this.closest('.cardfold').classList.toggle('collapsed')">
-        <h2>Knockout bracket</h2><span class="hint" id="bracketNote">live</span><span class="foldchev">▾</span>
-      </div>
-      <div class="cardfold-body">
-        <div id="bracketList"></div>
-        <footer>Round of 32 through the final, built live from the same results feed. Family teams are highlighted; winners are bolded.</footer>
-      </div>
-    </div>
+    <div class="sec-head"><h2>Group tables</h2><span class="hint" id="groupsNote">live</span></div>
+    <div class="glegend"><span class="lg q">Through</span><span class="lg q3">3rd-place watch</span><span class="lg o">Eliminated</span></div>
+    <div id="groupsList"></div>
+    <footer>Standings are computed live from results — won 3, drawn 1. Top two of each group advance, plus the eight best third-placed teams. Your family teams are highlighted.</footer>
   </section>
 
   <section class="panel" id="panel-scorers">
@@ -499,80 +412,80 @@ const isOurs = t => !!OWNERS[t];
 
 /* ===== Every match (real results, opening match first) ===== */
 const MATCHES = [
-  {day:"Thu 11 Jun",group:"Group A",st:"final",a:"Mexico",as:2,b:"South Africa",bs:0,
+  {day:"Thu 11 Jun",st:"final",a:"Mexico",as:2,b:"South Africa",bs:0,
    goals:[{s:"a",n:"Quiñones"},{s:"a",n:"R. Jiménez"}],
-   cards:[{s:"b",n:"Sithole",t:"R",m:"49"},{s:"b",n:"Zwane",t:"R",m:"84"},{s:"a",n:"C. Montes",t:"R",m:"90+2"}]},
-  {day:"Fri 12 Jun",group:"Group A",st:"final",a:"South Korea",as:2,b:"Czechia",bs:1,
+   cards:[{s:"b",n:"Sithole",t:"R"},{s:"b",n:"Zwane",t:"R"},{s:"a",n:"C. Montes",t:"R"}]},
+  {day:"Fri 12 Jun",st:"final",a:"South Korea",as:2,b:"Czechia",bs:1,
    goals:[{s:"b",n:"Krejčí",m:"60"},{s:"a",n:"Hwang In-beom",m:"67"},{s:"a",n:"Oh Hyeon-gyu",m:"80"}],cards:[]},
-  {day:"Fri 12 Jun",group:"Group B",st:"final",a:"Canada",as:1,b:"Bosnia",bs:1,
+  {day:"Fri 12 Jun",st:"final",a:"Canada",as:1,b:"Bosnia",bs:1,
    goals:[{s:"b",n:"Lukić"},{s:"a",n:"Larin"}],cards:[]},
-  {day:"Sat 13 Jun",group:"Group D",st:"final",a:"USA",as:4,b:"Paraguay",bs:1,cards:[]},
-  {day:"Sat 13 Jun",group:"Group B",st:"final",a:"Qatar",as:1,b:"Switzerland",bs:1,
+  {day:"Sat 13 Jun",st:"final",a:"USA",as:4,b:"Paraguay",bs:1,cards:[]},
+  {day:"Sat 13 Jun",st:"final",a:"Qatar",as:1,b:"Switzerland",bs:1,
    goals:[{s:"b",n:"Embolo"},{s:"a",n:"Muheim",m:"90+4",x:"OG"}],cards:[]},
-  {day:"Sat 13 Jun",group:"Group C",st:"final",a:"Brazil",as:1,b:"Morocco",bs:1,cards:[]},
-  {day:"Sun 14 Jun",group:"Group C",st:"final",a:"Haiti",as:0,b:"Scotland",bs:1,
+  {day:"Sat 13 Jun",st:"final",a:"Brazil",as:1,b:"Morocco",bs:1,cards:[]},
+  {day:"Sun 14 Jun",st:"final",a:"Haiti",as:0,b:"Scotland",bs:1,
    goals:[{s:"b",n:"McGinn",m:"28"}],cards:[]},
-  {day:"Sun 14 Jun",group:"Group D",st:"final",a:"Australia",as:2,b:"Türkiye",bs:0,
+  {day:"Sun 14 Jun",st:"final",a:"Australia",as:2,b:"Türkiye",bs:0,
    goals:[{s:"a",n:"Irankunda"},{s:"a",n:"Metcalfe",m:"75"}],cards:[]},
-  {day:"Sun 14 Jun",group:"Group E",st:"final",a:"Germany",as:7,b:"Curaçao",bs:1,cards:[]},
-  {day:"Sun 14 Jun",group:"Group F",st:"final",a:"Netherlands",as:2,b:"Japan",bs:2,cards:[]},
-  {day:"Mon 15 Jun",group:"Group E",st:"final",a:"Ivory Coast",as:1,b:"Ecuador",bs:0,
+  {day:"Sun 14 Jun",st:"final",a:"Germany",as:7,b:"Curaçao",bs:1,cards:[]},
+  {day:"Sun 14 Jun",st:"final",a:"Netherlands",as:2,b:"Japan",bs:2,cards:[]},
+  {day:"Mon 15 Jun",st:"final",a:"Ivory Coast",as:1,b:"Ecuador",bs:0,
    goals:[{s:"a",n:"Amad Diallo",x:"late"}],cards:[]},
-  {day:"Mon 15 Jun",group:"Group F",st:"final",a:"Sweden",as:5,b:"Tunisia",bs:1,cards:[]},
-  {day:"Mon 15 Jun",group:"Group L",st:"final",a:"Spain",as:0,b:"Cabo Verde",bs:0,cards:[]},
-  {day:"Mon 15 Jun",group:"Group G",st:"final",a:"Egypt",as:1,b:"Belgium",bs:1,cards:[]},
-  {day:"Mon 15 Jun",group:"Group L",st:"final",a:"Saudi Arabia",as:1,b:"Uruguay",bs:1,cards:[]},
-  {day:"Tue 16 Jun",group:"Group G",st:"final",a:"Iran",as:2,b:"New Zealand",bs:2,cards:[]},
-  {day:"Tue 16 Jun",group:"Group H",st:"final",a:"France",as:3,b:"Senegal",bs:1,cards:[]},
-  {day:"Tue 16 Jun",group:"Group H",st:"final",a:"Iraq",as:1,b:"Norway",bs:4,cards:[]},
-  {day:"Wed 17 Jun",group:"Group I",st:"final",a:"Argentina",as:3,b:"Algeria",bs:0,
+  {day:"Mon 15 Jun",st:"final",a:"Sweden",as:5,b:"Tunisia",bs:1,cards:[]},
+  {day:"Mon 15 Jun",st:"final",a:"Spain",as:0,b:"Cabo Verde",bs:0,cards:[]},
+  {day:"Mon 15 Jun",st:"final",a:"Egypt",as:1,b:"Belgium",bs:1,cards:[]},
+  {day:"Mon 15 Jun",st:"final",a:"Saudi Arabia",as:1,b:"Uruguay",bs:1,cards:[]},
+  {day:"Tue 16 Jun",st:"final",a:"Iran",as:2,b:"New Zealand",bs:2,cards:[]},
+  {day:"Tue 16 Jun",st:"final",a:"France",as:3,b:"Senegal",bs:1,cards:[]},
+  {day:"Tue 16 Jun",st:"final",a:"Iraq",as:1,b:"Norway",bs:4,cards:[]},
+  {day:"Wed 17 Jun",st:"final",a:"Argentina",as:3,b:"Algeria",bs:0,
    goals:[{s:"a",n:"Messi",x:"hat-trick"}],cards:[]},
-  {day:"Wed 17 Jun",group:"Group I",st:"final",a:"Austria",as:3,b:"Jordan",bs:1,
+  {day:"Wed 17 Jun",st:"final",a:"Austria",as:3,b:"Jordan",bs:1,
    goals:[{s:"a",n:"Schmid"},{s:"b",n:"Olwan",m:"50"},{s:"a",n:"Al Arab",x:"OG"},{s:"a",n:"Arnautović",x:"pen"}],cards:[]},
-  {day:"Wed 17 Jun",group:"Group J",st:"final",a:"Portugal",as:1,b:"DR Congo",bs:1,
+  {day:"Wed 17 Jun",st:"final",a:"Portugal",as:1,b:"DR Congo",bs:1,
    goals:[{s:"a",n:"J. Neves",m:"6"},{s:"b",n:"Wissa",m:"45+5"}],
    cards:[{s:"a",n:"B. Silva",t:"Y",m:"13"},{s:"b",n:"Mbemba",t:"Y",m:"32"}]},
-  {day:"Wed 17 Jun",group:"Group K",st:"final",a:"England",as:4,b:"Croatia",bs:2,
+  {day:"Wed 17 Jun",st:"final",a:"England",as:4,b:"Croatia",bs:2,
    goals:[{s:"a",n:"Kane",m:"12",x:"pen"},{s:"b",n:"Baturina",m:"36"},{s:"a",n:"Kane",m:"42"},{s:"b",n:"Musa",m:"45+5"},{s:"a",n:"Bellingham",m:"47"},{s:"a",n:"Rashford",m:"85"}],cards:[]},
-  {day:"Wed 17 Jun",group:"Group K",st:"final",a:"Ghana",as:1,b:"Panama",bs:0,
+  {day:"Wed 17 Jun",st:"final",a:"Ghana",as:1,b:"Panama",bs:0,
    goals:[{s:"a",n:"Yirenkyi",m:"90+5"}],
    cards:[{s:"a",n:"Yirenkyi",t:"Y",m:"16"},{s:"b",n:"Blackman",t:"Y",m:"72"},{s:"b",n:"Harvey",t:"Y",m:"90+9"}]},
-  {day:"Wed 17 Jun",group:"Group J",st:"final",a:"Colombia",as:3,b:"Uzbekistan",bs:1,
+  {day:"Wed 17 Jun",st:"final",a:"Colombia",as:3,b:"Uzbekistan",bs:1,
    goals:[{s:"a",n:"Muñoz",m:"40"},{s:"b",n:"Fayzullaev",m:"60"},{s:"a",n:"L. Díaz",m:"65"},{s:"a",n:"Campaz",m:"90+9"}],
    cards:[{s:"b",n:"Khusanov",t:"Y"}]},
-  {day:"Thu 18 Jun",group:"Group A",st:"final",a:"Czechia",as:1,b:"South Africa",bs:1,
+  {day:"Thu 18 Jun",st:"final",a:"Czechia",as:1,b:"South Africa",bs:1,
    goals:[{s:"a",n:"Sadílek",m:"6"},{s:"b",n:"Mokoena",m:"83",x:"pen"}],cards:[]},
-  {day:"Thu 18 Jun",group:"Group B",st:"final",a:"Switzerland",as:4,b:"Bosnia",bs:1,
+  {day:"Thu 18 Jun",st:"final",a:"Switzerland",as:4,b:"Bosnia",bs:1,
    goals:[{s:"a",n:"Manzambi",m:"74"},{s:"a",n:"Vargas",m:"84"},{s:"a",n:"Manzambi",m:"90"},{s:"b",n:"Mahmic",m:"90+3"},{s:"a",n:"Xhaka",m:"90+7",x:"pen"}],
    cards:[{s:"b",n:"Muharemović",t:"R",m:"80"}]},
-  {day:"Thu 18 Jun",group:"Group B",st:"final",a:"Canada",as:6,b:"Qatar",bs:0,
+  {day:"Thu 18 Jun",st:"final",a:"Canada",as:6,b:"Qatar",bs:0,
    goals:[{s:"a",n:"Larin",m:"16"},{s:"a",n:"J. David",m:"29"},{s:"a",n:"J. David",m:"45"},{s:"a",n:"Saliba",m:"64"},{s:"a",n:"Manai",m:"75",x:"OG"},{s:"a",n:"J. David",m:"90+2"}],
    cards:[{s:"b",n:"H. Ahmed",t:"R",m:"33"},{s:"b",n:"Madibo",t:"R",m:"51"}]},
-  {day:"Thu 18 Jun",group:"Group A",st:"final",a:"Mexico",as:1,b:"South Korea",bs:0,
+  {day:"Thu 18 Jun",st:"final",a:"Mexico",as:1,b:"South Korea",bs:0,
    goals:[{s:"a",n:"Romo",m:"50"}],
    cards:[{s:"b",n:"Lee Kang-in",t:"Y"},{s:"b",n:"Paik Seung-ho",t:"Y"}]},
-  {day:"Fri 19 Jun",group:"Group D",st:"final",a:"USA",as:2,b:"Australia",bs:0,
+  {day:"Fri 19 Jun",st:"final",a:"USA",as:2,b:"Australia",bs:0,
    goals:[{s:"a",n:"Burgess",m:"11",x:"OG"},{s:"a",n:"A. Freeman",m:"43"}],
    cards:[{s:"b",n:"Bos",t:"Y",m:"16"},{s:"b",n:"Circati",t:"Y",m:"32"},{s:"a",n:"Robinson",t:"Y",m:"56"},{s:"b",n:"Souttar",t:"Y",m:"88"},{s:"b",n:"Italiano",t:"Y",m:"89"},{s:"a",n:"Balogun",t:"Y",m:"89"},{s:"a",n:"Richards",t:"Y",m:"90+3"}]},
-  {day:"Fri 19 Jun",group:"Group C",st:"final",a:"Scotland",as:0,b:"Morocco",bs:1,
+  {day:"Fri 19 Jun",st:"final",a:"Scotland",as:0,b:"Morocco",bs:1,
    goals:[{s:"b",n:"Saibari",m:"2"}],cards:[]},
   /* upcoming */
-  {day:"Sat 20 Jun",group:"Group C",t:"02:30",st:"scheduled",a:"Brazil",b:"Haiti",prob:{a:88.7,d:7.9,b:3.4}},
-  {day:"Sat 20 Jun",group:"Group D",t:"05:00",st:"scheduled",a:"Türkiye",b:"Paraguay",prob:{a:46.7,d:27.9,b:25.4}},
-  {day:"Sat 20 Jun",group:"Group F",t:"19:00",st:"scheduled",a:"Netherlands",b:"Sweden",prob:{a:56.1,d:23.3,b:20.6}},
-  {day:"Sat 20 Jun",group:"Group E",t:"22:00",st:"scheduled",a:"Germany",b:"Ivory Coast",prob:{a:62.8,d:20.9,b:16.3}},
-  {day:"Sun 21 Jun",group:"Group E",t:"02:00",st:"scheduled",a:"Ecuador",b:"Curaçao",prob:{a:87.6,d:8.9,b:3.5}},
-  {day:"Sun 21 Jun",group:"Group F",t:"06:00",st:"scheduled",a:"Tunisia",b:"Japan",prob:{a:14.3,d:23.1,b:62.6}},
-  {day:"Sun 21 Jun",group:"Group L",t:"18:00",st:"scheduled",a:"Spain",b:"Saudi Arabia",prob:{a:88.7,d:8.4,b:2.9}},
-  {day:"Sun 21 Jun",group:"Group G",t:"21:00",st:"scheduled",a:"Belgium",b:"Iran",prob:{a:67.5,d:19.9,b:12.6}},
-  {day:"Mon 22 Jun",group:"Group L",t:"00:00",st:"scheduled",a:"Uruguay",b:"Cabo Verde",prob:{a:65.4,d:22.3,b:12.3}},
-  {day:"Mon 22 Jun",group:"Group G",t:"03:00",st:"scheduled",a:"New Zealand",b:"Egypt",prob:{a:16.6,d:23.9,b:59.5}},
+  {day:"Sat 20 Jun",t:"02:30",st:"scheduled",a:"Brazil",b:"Haiti",prob:{a:88.7,d:7.9,b:3.4}},
+  {day:"Sat 20 Jun",t:"05:00",st:"scheduled",a:"Türkiye",b:"Paraguay",prob:{a:46.7,d:27.9,b:25.4}},
+  {day:"Sat 20 Jun",t:"19:00",st:"scheduled",a:"Netherlands",b:"Sweden",prob:{a:56.1,d:23.3,b:20.6}},
+  {day:"Sat 20 Jun",t:"22:00",st:"scheduled",a:"Germany",b:"Ivory Coast",prob:{a:62.8,d:20.9,b:16.3}},
+  {day:"Sun 21 Jun",t:"02:00",st:"scheduled",a:"Ecuador",b:"Curaçao",prob:{a:87.6,d:8.9,b:3.5}},
+  {day:"Sun 21 Jun",t:"06:00",st:"scheduled",a:"Tunisia",b:"Japan",prob:{a:14.3,d:23.1,b:62.6}},
+  {day:"Sun 21 Jun",t:"18:00",st:"scheduled",a:"Spain",b:"Saudi Arabia",prob:{a:88.7,d:8.4,b:2.9}},
+  {day:"Sun 21 Jun",t:"21:00",st:"scheduled",a:"Belgium",b:"Iran",prob:{a:67.5,d:19.9,b:12.6}},
+  {day:"Mon 22 Jun",t:"00:00",st:"scheduled",a:"Uruguay",b:"Cabo Verde",prob:{a:65.4,d:22.3,b:12.3}},
+  {day:"Mon 22 Jun",t:"03:00",st:"scheduled",a:"New Zealand",b:"Egypt",prob:{a:16.6,d:23.9,b:59.5}},
 ];
 
 /* ===== Derive team records, reds, progression + elimination ===== */
 const T = {};
-let STATUS = {elim:new Set(),advanced:new Set(),r16:new Set(),qf:new Set(),sf:new Set(),champion:null};
-function ensureT(t){ if(!T[t]) T[t]={w:0,d:0,l:0,red:0,og:false,r16:false,qf:false,sf:false,champ:false}; return T[t]; }
+let STATUS = {elim:new Set(),advanced:new Set(),qf:new Set(),champion:null};
+function ensureT(t){ if(!T[t]) T[t]={w:0,d:0,l:0,red:0,og:false,qf:false,champ:false}; return T[t]; }
 /* Optional manual progression override (the free feed has no card/progression
    data). Use it to force-credit a team you know has clinched, e.g.
    { "USA":{og:true} }. Everything else is derived automatically below. */
@@ -587,31 +500,21 @@ function decide(sc){
   return {as,bs,win,note};
 }
 function resultOf(m){ return m.win || (m.as>m.bs?'a':m.as<m.bs?'b':'d'); }
-/* Shared per-group standings builder — used by both elimination/progression
-   status (below) and the Groups tab table, so MATCHES is only walked once. */
-function buildGroupTables(){
-  const G={};
+function computeStatus(){
+  const elim=new Set(), advanced=new Set(), qf=new Set(); let champion=null;
+  const groups={};
   MATCHES.forEach(m=>{
     if(!m.group) return;
-    const grp=G[m.group]||(G[m.group]={});
-    [m.a,m.b].forEach(t=>{ if(FLAGS[t]&&!grp[t]) grp[t]={team:t,p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0}; });
-    if(m.st==='final'&&FLAGS[m.a]&&FLAGS[m.b]&&grp[m.a]&&grp[m.b]){
-      const A=grp[m.a],B=grp[m.b];
-      A.p++; B.p++; A.gf+=m.as; A.ga+=m.bs; B.gf+=m.bs; B.ga+=m.as;
-      const r=resultOf(m);
-      if(r==='a'){A.w++;B.l++;A.pts+=3;}
-      else if(r==='b'){B.w++;A.l++;B.pts+=3;}
-      else {A.d++;B.d++;A.pts++;B.pts++;}
+    const G=groups[m.group]||(groups[m.group]={});
+    [m.a,m.b].forEach(t=>{ if(FLAGS[t]&&!G[t]) G[t]={team:t,pts:0,gd:0,gf:0,pl:0}; });
+    if(m.st==='final'&&FLAGS[m.a]&&FLAGS[m.b]){
+      const A=G[m.a],B=G[m.b]; A.pl++;B.pl++; A.gf+=m.as;B.gf+=m.bs; A.gd+=m.as-m.bs;B.gd+=m.bs-m.as;
+      const r=resultOf(m); if(r==='a')A.pts+=3; else if(r==='b')B.pts+=3; else {A.pts++;B.pts++;}
     }
   });
-  return G;
-}
-function computeStatus(){
-  const elim=new Set(), advanced=new Set(), r16=new Set(), qf=new Set(), sf=new Set(); let champion=null;
-  const groups=buildGroupTables();
   const thirds=[]; const total=Object.keys(groups).length; let done=0;
   Object.values(groups).forEach(g=>{
-    const arr=Object.values(g).map(t=>({...t,gd:t.gf-t.ga,pl:t.p})).sort((x,y)=>y.pts-x.pts||y.gd-x.gd||y.gf-x.gf);
+    const arr=Object.values(g).sort((x,y)=>y.pts-x.pts||y.gd-x.gd||y.gf-x.gf);
     if(arr.length>=4 && arr.every(t=>t.pl>=3)){ done++; arr.slice(0,2).forEach(t=>advanced.add(t.team)); if(arr[2])thirds.push(arr[2]); arr.slice(3).forEach(t=>elim.add(t.team)); }
   });
   if(total>=12 && done===total && thirds.length){   // all groups done → settle best thirds
@@ -629,17 +532,10 @@ function computeStatus(){
       if(bR){ r32.add(m.b); advanced.add(m.b); }
       if(aR&&bR) r32Real++;
     }
-    if(/round of 16/i.test(rd)){ [m.a,m.b].forEach(t=>{ if(FLAGS[t]) r16.add(t); }); }
     if(/quarter/i.test(rd)){ [m.a,m.b].forEach(t=>{ if(FLAGS[t]) qf.add(t); }); }
-    if(/semi/i.test(rd)){ [m.a,m.b].forEach(t=>{ if(FLAGS[t]) sf.add(t); }); }
     if(isKO(m)&&m.st==='final'&&FLAGS[m.a]&&FLAGS[m.b]){
-      const w=resultOf(m);
-      /* A draw can't eliminate anyone (knockout legs are always decided, via
-         pens if needed) — only treat a clear 'a'/'b' result as a loss. The old
-         ternary defaulted to m.a as "loser" whenever w wasn't exactly 'a',
-         which wrongly eliminated the home team on every drawn match. */
-      if(w==='a'||w==='b'){ elim.add(w==='a'?m.b:m.a); }
-      if(/^final$/i.test(rd)) champion = w==='a'?m.a:w==='b'?m.b:champion;
+      const w=resultOf(m), loser=w==='a'?m.b:m.a; elim.add(loser);
+      if(/^final$/i.test(rd)) champion = w==='a'?m.a:m.b;
     }
   });
   /* Only treat "missing from the R32 bracket" as eliminated once the ENTIRE
@@ -650,7 +546,7 @@ function computeStatus(){
     gt.forEach(t=>{ if(!r32.has(t)) elim.add(t); });
   }
   if(champion) elim.delete(champion);
-  return {elim,advanced,r16,qf,sf,champion};
+  return {elim,advanced,qf,champion};
 }
 function deriveT(){
   for(const k in T) delete T[k];
@@ -661,15 +557,13 @@ function deriveT(){
   });
   STATUS=computeStatus();
   STATUS.advanced.forEach(t=>ensureT(t).og=true);
-  STATUS.r16.forEach(t=>ensureT(t).r16=true);
   STATUS.qf.forEach(t=>ensureT(t).qf=true);
-  STATUS.sf.forEach(t=>ensureT(t).sf=true);
   if(STATUS.champion) ensureT(STATUS.champion).champ=true;
   if(PROXY_REDS){ for(const t in PROXY_REDS) ensureT(t).red=PROXY_REDS[t]; }
   for(const t in PROG) Object.assign(ensureT(t),PROG[t]);
 }
 deriveT();
-const stat = t => T[t] || {w:0,d:0,l:0,red:0,og:false,r16:false,qf:false,sf:false,champ:false};
+const stat = t => T[t] || {w:0,d:0,l:0,red:0,og:false,qf:false,champ:false};
 
 /* ===== Scoring ===== */
 const TIERL={gold:"G",silver:"S",bronze:"B"};
@@ -684,11 +578,6 @@ const playerPts=p=>playerBreakdown(p).reduce((a,b)=>a+b.total,0);
 function standings(){return PLAYERS.map(p=>({p,pts:playerPts(p)})).sort((a,b)=>b.pts-a.pts||a.p.name.localeCompare(b.p.name));}
 function matchPtsFor(tier,res){const bz=tier==="bronze";return res==="W"?(bz?12:10):res==="D"?(bz?6:5):0;}
 function progLabel(s){return s.champ?"champ":s.qf?"QF":s.og?"R32":"";}
-/* Furthest-round badge shown on player team chips — distinct from progLabel()
-   above, which only names the tiers that actually carry bonus points (R32/QF/
-   champion). This shows R16 and SF too so the chip reflects how far a team
-   has actually gone, even though those two rounds don't add their own bonus. */
-function furthestRoundLabel(s){ return s.champ?"W":s.sf?"SF":s.qf?"QF":s.r16?"R16":"R32"; }
 
 /* ===== Leaderboard ===== */
 const boardList=document.getElementById("boardList");
@@ -698,7 +587,7 @@ function chipHTML(pk){
   const out=STATUS.elim.has(pk.team), champ=STATUS.champion===pk.team;
   return `<span class="chip ${adv?'adv':''} ${s.red>0?'hasred':''} ${out?'out':''} ${champ?'champ':''}"><span class="tier ${pk.tier}">${TIERL[pk.tier]}</span>`+
     `<span class="fl">${flag(pk.team)}</span><span class="tn">${pk.team}</span>`+
-    (champ?`<span class="champbadge">🏆</span>`:s.og?`<span class="qbadge">${furthestRoundLabel(s)}</span>`:'')+
+    (champ?`<span class="champbadge">🏆</span>`:s.og?`<span class="qbadge">${s.qf?'QF':'R32'}</span>`:'')+
     (played&&!out?`<span class="st">${recordShort(s)}</span>`:'')+
     (out?`<span class="outbadge">OUT</span>`:'')+
     (s.red>0?`<span class="redbadge">−${s.red}</span>`:'')+`</span>`;
@@ -814,44 +703,26 @@ function renderFixtures(){
   document.getElementById("fixturesList").innerHTML=html;
 }
 
-/* ===== Live match tab — shows only matches currently in progress, with
-   whatever goals/cards the feed has reported so far. Deliberately isolated
-   from Results/Fixtures (which filter on st==='final'/'scheduled' and so
-   never include a 'live' match) and from all scoring/elimination logic. */
-function renderLive(){
-  const el=document.getElementById('liveList'), note=document.getElementById('liveNote');
-  if(!el) return;
-  const live=MATCHES.filter(m=>m.st==='live');
-  if(note) note.textContent = live.length ? `${live.length} live` : 'none right now';
-  if(!live.length){
-    /* openfootball is a hand-updated daily snapshot with no in-progress
-       concept at all (no elapsed-time field, no partial scores) — it can
-       never populate a 'live' match, regardless of what's actually happening.
-       Say so explicitly instead of showing the same empty state as "nothing
-       is on right now", which would look like a bug rather than a known
-       limitation of that data source. */
-    el.innerHTML = ACTIVE_SOURCE==='openfootball'
-      ? '<div class="gtable"><div class="stat-empty">openfootball updates about once a day and has no in-progress data — switch the source picker above to <b>worldcup26.ir</b> for real-time live matches.</div></div>'
-      : '<div class="gtable"><div class="stat-empty">No match in progress right now — check back when one kicks off.</div></div>';
-    return;
-  }
-  el.innerHTML=live.map(m=>{
-    const aO=isOurs(m.a), bO=isOurs(m.b), clash=aO&&bO;
-    let fam="";
-    if(aO) fam+=`<div class="fam-row"><span class="ft"><span class="fl">${flag(m.a)}</span>${m.a}</span><span class="pchips">${ownerPchips(m.a,null,false)}</span></div>`;
-    if(bO) fam+=`<div class="fam-row"><span class="ft"><span class="fl">${flag(m.b)}</span>${m.b}</span><span class="pchips">${ownerPchips(m.b,null,false)}</span></div>`;
-    const famBlock=(aO||bO)?`<div class="fam">${fam}</div>`:`<div class="nofam">No family teams in this match.</div>`;
-    const clockTxt=m.elapsed && /^\d/.test(m.elapsed) ? `${m.elapsed}'` : (m.elapsed||'');
-    return `<div class="livecard ${clash?'clash':''}">
-      <div class="mtop"><span class="livebadge"><span class="dot"></span>Live</span>${clockTxt?`<span class="liveclock">${clockTxt}</span>`:''}</div>
-      <div class="scoreline">${sideHTML(m.a,'',aO,'home')}<span class="sc">${m.as ?? 0} – ${m.bs ?? 0}</span>${sideHTML(m.b,'',bO,'away')}</div>
-      ${eventsBlock(m)}${famBlock}</div>`;
-  }).join('');
+function computeGroups(){
+  const G={};
+  MATCHES.forEach(m=>{
+    if(!m.group) return;
+    const grp=G[m.group]||(G[m.group]={});
+    [m.a,m.b].forEach(t=>{ if(FLAGS[t]&&!grp[t]) grp[t]={team:t,p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0}; });
+    if(m.st==='final' && FLAGS[m.a] && FLAGS[m.b] && grp[m.a] && grp[m.b]){
+      const A=grp[m.a], B=grp[m.b];
+      A.p++; B.p++; A.gf+=m.as; A.ga+=m.bs; B.gf+=m.bs; B.ga+=m.as;
+      const r=resultOf(m);
+      if(r==='a'){A.w++;B.l++;A.pts+=3;}
+      else if(r==='b'){B.w++;A.l++;B.pts+=3;}
+      else {A.d++;B.d++;A.pts++;B.pts++;}
+    }
+  });
+  return G;
 }
-
 function renderGroups(){
   const el=document.getElementById('groupsList'); if(!el) return;
-  const G=buildGroupTables();
+  const G=computeGroups();
   const keys=Object.keys(G).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
   if(!keys.length){ el.innerHTML='<div class="gtable"><div class="stat-empty">Group tables will appear once matches kick off.</div></div>'; return; }
   el.innerHTML=keys.map(gk=>{
@@ -869,44 +740,8 @@ function renderGroups(){
         `<span class="gc gpts">${t.pts}</span></div>`;
     }).join('');
     const head=`<div class="gt-row gt-head"><span class="gp">#</span><span class="gt">Team</span><span class="gc">Pl</span><span class="gc wdl">W</span><span class="gc wdl">D</span><span class="gc wdl">L</span><span class="gc">GD</span><span class="gc">Pts</span></div>`;
-    return `<div class="grp"><div class="grp-h" onclick="this.parentElement.classList.toggle('collapsed')"><h3>${gk}</h3><span class="chev">▾</span></div><div class="gtable">${head}${body}</div></div>`;
+    return `<div class="grp"><div class="grp-h"><h3>${gk}</h3></div><div class="gtable">${head}${body}</div></div>`;
   }).join('');
-}
-
-/* ===== Knockout bracket (R32 → R16 → QF → SF → Final), driven by m.round
-   from the live feed — same MATCHES array the rest of the page reads, so
-   it fills in and updates automatically as later rounds get fetched. */
-const BRACKET_ROUNDS=[
-  {key:'r32',label:'Round of 32',test:r=>/round of 32/i.test(r)},
-  {key:'r16',label:'Round of 16',test:r=>/round of 16/i.test(r)},
-  {key:'qf',label:'Quarterfinals',test:r=>/quarter/i.test(r)},
-  {key:'sf',label:'Semifinals',test:r=>/semi/i.test(r)},
-  {key:'final',label:'Final',test:r=>/^final$/i.test(r.trim())},
-];
-function bracketSideHTML(m,side){
-  const name=side==='a'?m.a:m.b, score=side==='a'?m.as:m.bs;
-  const ph=!FLAGS[name], fam=!ph&&isOurTeam(name);
-  const played=m.st==='final', win=played&&resultOf(m)===side;
-  return `<div class="bm-side ${win?'bm-win':''} ${fam?'bm-fam':''} ${ph?'bm-tbd-side':''}">`+
-    `<span class="bm-fl">${ph?'⚽':flag(name)}</span><span class="bm-nm">${ph?'TBD':name}</span>`+
-    `${played?`<span class="bm-sc">${score}</span>`:''}</div>`;
-}
-function bracketMatchHTML(m){
-  return `<div class="bm ${(isOurTeam(m.a)||isOurTeam(m.b))?'bm-fam-match':''}">${bracketSideHTML(m,'a')}${bracketSideHTML(m,'b')}</div>`;
-}
-function renderBracket(){
-  const el=document.getElementById('bracketList'); if(!el) return;
-  const buckets={};
-  MATCHES.forEach(m=>{
-    if(!isKO(m)) return;
-    const round=BRACKET_ROUNDS.find(r=>r.test(m.round||''));
-    if(round) (buckets[round.key]=buckets[round.key]||[]).push(m);
-  });
-  const cols=BRACKET_ROUNDS.filter(r=>buckets[r.key]&&buckets[r.key].length);
-  if(!cols.length){ el.innerHTML='<div class="gtable"><div class="stat-empty">Bracket fills in once the Round of 32 draw is set.</div></div>'; return; }
-  el.innerHTML=`<div class="bracket">${cols.map(r=>
-    `<div class="bcol"><div class="bcol-h" onclick="this.parentElement.classList.toggle('collapsed')"><span>${r.label}</span><span class="chev">▾</span></div>${buckets[r.key].map(bracketMatchHTML).join('')}</div>`
-  ).join('')}</div>`;
 }
 
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
@@ -938,6 +773,7 @@ function tick(){cx.clearRect(0,0,cv.width,cv.height);
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   const NAMES=PLAYERS.map(p=>p.name);
   let scores={},me='Guest',W=0,H=0,dpr=1,ball=null,count=0,best=0,g=0.34,playing=false,raf=0,conf=[];
+  let taps=[],t0=0;   // run telemetry: tap timestamps + start time (validated server-side)
   nameSel.innerHTML=['Guest',...NAMES].map(n=>`<option>${n}</option>`).join('');
 
   /* ── Supabase (shared leaderboard) ───────────────────────────────
@@ -954,9 +790,19 @@ function tick(){cx.clearRect(0,0,cv.width,cv.height);
     if(!r.ok)throw new Error('sb load '+r.status);
     const rows=await r.json(),m={};rows.forEach(x=>{const n=x.name,s=+x.score||0;if(n&&s)m[n]=Math.max(m[n]||0,s);});return m;
   }
-  async function sbSave(name,score){
-    const r=await fetch(`${SUPABASE_URL}/rest/v1/juggle_scores`,{method:'POST',headers:sbHeaders({Prefer:'return=minimal'}),body:JSON.stringify({name,score})});
+  async function sha256hex(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');}
+  async function sbSave(name,score,dur,ntaps){
+    // All writes go through the validating RPC (see supabase-protect.sql).
+    const hash=await sha256hex(`${name}|${score}|${dur}|${ntaps}|wc26-pitch`);
+    const r=await fetch(`${SUPABASE_URL}/rest/v1/rpc/submit_score`,{method:'POST',headers:sbHeaders(),
+      body:JSON.stringify({p_name:name,p_score:score,p_duration_ms:dur,p_taps:ntaps,p_hash:hash})});
+    if(r.status===404){ // RPC not installed yet -> legacy open insert so nothing breaks
+      const l=await fetch(`${SUPABASE_URL}/rest/v1/juggle_scores`,{method:'POST',headers:sbHeaders({Prefer:'return=minimal'}),body:JSON.stringify({name,score})});
+      if(!l.ok)throw new Error('sb save '+l.status);return;
+    }
     if(!r.ok)throw new Error('sb save '+r.status);
+    const j=await r.json().catch(()=>null);
+    if(j&&j.status==='caught') matrixVoid('server');
   }
   const mergeMax=(a,b)=>{const o=Object.assign({},a);for(const k in b){const v=+b[k]||0;if(v)o[k]=Math.max(o[k]||0,v);}return o;};
   function setSync(){const el=document.getElementById('kuSync');if(!el)return;el.textContent=usingSB?'● live':(window.storage?'● shared':'● this device');el.style.color=usingSB?'var(--grass)':'var(--muted)';}
@@ -970,11 +816,11 @@ function tick(){cx.clearRect(0,0,cv.width,cv.height);
     try{const m=localStorage.getItem(MEKEY);if(m&&(m==='Guest'||NAMES.includes(m)))me=m;}catch(e){}
     nameSel.value=me;best=scores[me]||0;renderBoard();updateBest();setSync();
   }
-  async function saveScore(name,score){
+  async function saveScore(name,score,dur,ntaps){
     scores[name]=Math.max(scores[name]||0,score);
     try{localStorage.setItem(KEY,JSON.stringify(scores));}catch(e){}
     try{if(window.storage&&window.storage.set)await window.storage.set(KEY,JSON.stringify(scores),true);}catch(e){}
-    if(SB){try{await sbSave(name,score);usingSB=true;const fresh=await sbLoad();scores=mergeMax(scores,fresh);}catch(e){usingSB=false;}}
+    if(SB){try{await sbSave(name,score,dur,ntaps);usingSB=true;const fresh=await sbLoad();scores=mergeMax(scores,fresh);}catch(e){usingSB=false;}}
     renderBoard();setSync();
   }
   function renderBoard(){
@@ -990,14 +836,27 @@ function tick(){cx.clearRect(0,0,cv.width,cv.height);
   function hidePanel(){panel.classList.add('hide');}
   function start(){
     me=nameSel.value;best=scores[me]||0;updateBest();try{localStorage.setItem(MEKEY,me);}catch(e){}
-    count=0;g=0.20;conf=[];ball={x:W/2,y:H*0.42,vx:(Math.random()-.5)*1.5,vy:-6.5,r:Math.max(34,Math.min(50,W*0.10))};
+    count=0;g=0.20;conf=[];taps=[];t0=performance.now();ball={x:W/2,y:H*0.42,vx:(Math.random()-.5)*1.5,vy:-6.5,r:Math.max(34,Math.min(50,W*0.10))};
     playing=true;hidePanel();scoreEl.textContent='0';cancelAnimationFrame(raf);loop();
   }
   function gameOver(){
     playing=false;
+    const dur=Math.round(performance.now()-t0);
+    // integrity gate: count must equal recorded taps, pace must be humanly possible,
+    // and 30+ metronome-perfect intervals means a bot is driving.
+    if(count>0){
+      let robotic=false;
+      if(taps.length>=30){
+        const iv=taps.slice(1).map((t,i)=>t-taps[i]);
+        const mean=iv.reduce((a,b)=>a+b,0)/iv.length;
+        const sd=Math.sqrt(iv.reduce((a,b)=>a+(b-mean)*(b-mean),0)/iv.length);
+        robotic=sd<4;
+      }
+      if(count!==taps.length || dur<count*60 || count>2000 || robotic){ matrixVoid('tamper'); return; }
+    }
     const champBefore=Object.keys(scores).reduce((mx,k)=>Math.max(mx,scores[k]),0);
     const isBest=count>best;
-    if(count>0){saveScore(me,count);}
+    if(count>0){saveScore(me,count,dur,taps.length);}
     best=scores[me]||0;updateBest();
     const isChamp=count>0&&count>champBefore;
     const h=count>0?`${count} touch${count===1?'':'es'}!`:'Ball down!';
@@ -1010,7 +869,7 @@ function tick(){cx.clearRect(0,0,cv.width,cv.height);
     const dx=px-ball.x,dy=py-ball.y,tol=ball.r*2.5;
     if(dx*dx+dy*dy<=tol*tol){
       ball.vy=-9.2;ball.vx+=dx*0.035+(Math.random()-.5)*0.9;ball.vx=Math.max(-4,Math.min(4,ball.vx));
-      count++;scoreEl.textContent=count;
+      count++;taps.push(performance.now());scoreEl.textContent=count;
       if(count%14===0)g=Math.min(g*1.04,0.40);
       if(count%10===0)showOle();
       return true;
@@ -1048,6 +907,68 @@ function tick(){cx.clearRect(0,0,cv.width,cv.height);
   load();
 })();
 
+/* ===== Tamper traps ═ the Matrix void ======================================
+   Server-side rules (supabase-protect.sql) are the real wall — direct table
+   writes are revoked and the RPC validates run physics. This layer is for the
+   fun part: honeypot functions a script kiddie will reach for, plus the
+   dissolve. Trip anything and the app rains away into glyphs, leaving a void. */
+let VOIDED=false;
+function matrixVoid(reason){
+  if(VOIDED) return; VOIDED=true;
+  try{sessionStorage.setItem('wc:void',reason||'1');}catch(e){}
+  document.querySelectorAll('canvas').forEach(c=>{ /* leave them; we cover all */ });
+  const cv=document.createElement('canvas');
+  cv.style.cssText='position:fixed;inset:0;z-index:99999;background:transparent';
+  document.body.appendChild(cv);
+  const x=cv.getContext('2d');
+  let W=cv.width=innerWidth,Hh=cv.height=innerHeight;
+  addEventListener('resize',()=>{W=cv.width=innerWidth;Hh=cv.height=innerHeight;});
+  document.body.style.overflow='hidden';
+  const GLYPHS='アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789⚽XZ$#%&';
+  const fs=16, cols=Math.ceil(W/fs);
+  const drops=Array.from({length:cols},()=>Math.random()*-60);
+  const speed=Array.from({length:cols},()=>0.6+Math.random()*0.9);
+  const t0=performance.now();
+  // freeze + dissolve the app beneath
+  const wrap=document.querySelector('.wrap')||document.body.firstElementChild;
+  function frame(){
+    const t=(performance.now()-t0)/1000;
+    // phase 1 (0-4s): rain floods in, app blurs away beneath
+    if(wrap){const b=Math.min(10,t*3);wrap.style.filter=`blur(${b}px) saturate(${Math.max(0,1-t/3)})`;wrap.style.opacity=String(Math.max(0,1-t/4));}
+    x.fillStyle='rgba(1,6,3,'+Math.min(0.28,0.08+t*0.05)+')';x.fillRect(0,0,W,Hh);
+    x.font=fs+'px monospace';
+    const active=Math.min(cols,Math.ceil(cols*(t/1.6)));
+    for(let i=0;i<active;i++){
+      const gx=i*fs, gy=drops[i]*fs;
+      x.fillStyle='rgba(198,255,62,.9)';
+      x.fillText(GLYPHS[Math.floor(Math.random()*GLYPHS.length)],gx,gy);
+      x.fillStyle='rgba(34,197,94,.45)';
+      x.fillText(GLYPHS[Math.floor(Math.random()*GLYPHS.length)],gx,gy-fs);
+      drops[i]+=speed[i];
+      if(gy>Hh&&Math.random()>0.975&&t<7) drops[i]=Math.random()*-30;
+    }
+    // phase 2 (7s+): the rain itself dies out — nothing left but void
+    if(t>7){x.fillStyle='rgba(0,0,0,'+Math.min(0.16,(t-7)*0.05)+')';x.fillRect(0,0,W,Hh);}
+    // phase 3: the message, typed into the emptiness
+    if(t>9){
+      const msg='> CAUGHT YOU.', sub='the pitch is gone. there is only void.';
+      const shown=msg.slice(0,Math.floor((t-9)*8));
+      x.fillStyle='rgba(0,0,0,.35)';x.fillRect(0,0,W,Hh);
+      x.font='700 26px "DM Mono",monospace';x.fillStyle='#c6ff3e';x.textAlign='center';
+      x.fillText(shown+((t*2|0)%2?'█':' '),W/2,Hh/2-8);
+      if(shown.length>=msg.length){x.font='13px "DM Mono",monospace';x.fillStyle='rgba(198,255,62,.45)';x.fillText(sub,W/2,Hh/2+26);}
+      x.textAlign='left';
+    }
+    requestAnimationFrame(frame);
+  }
+  frame();
+}
+/* honeypots — functions a cheat script goes looking for. Calling any = void. */
+['submitScore','setScore','setHighScore','addScore','hackScore','__ku_setBest'].forEach(fn=>{
+  try{Object.defineProperty(window,fn,{value:function(){matrixVoid('honeypot');return 'ok';},writable:false,configurable:false});}catch(e){}
+});
+try{ if(sessionStorage.getItem('wc:void')) matrixVoid('return'); }catch(e){}
+
 /* ===== Live match data (free, no API key) — multi-source with fallback =====
    Tried in order on every page load (and when you return to the tab):
      1) worldcup26.ir  — hosted REST API, claims real-time live scores
@@ -1080,16 +1001,14 @@ const mapTeam=n=>OF2OURS[n]||n;
    scoring (−1 to that team's owners). Update as more games are played. */
 const CARDS={
   "Mexico|South Africa":[
-    {team:"South Africa",n:"Sithole",t:"R",m:"49"},
-    {team:"South Africa",n:"Zwane",t:"R",m:"84"},
-    {team:"Mexico",n:"C. Montes",t:"R",m:"90+2"}
+    {team:"South Africa",n:"Sithole",t:"R"},
+    {team:"South Africa",n:"Zwane",t:"R"},
+    {team:"Mexico",n:"C. Montes",t:"R"}
   ],
-  "Bosnia|Switzerland":[{team:"Bosnia",n:"Muharemović",t:"R",m:"80"}],
-  "Canada|Qatar":[{team:"Qatar",n:"H. Ahmed",t:"R",m:"33"},{team:"Qatar",n:"Madibo",t:"R",m:"51"}],
+  "Bosnia|Switzerland":[{team:"Bosnia",n:"Muharemović",t:"R",m:"70"}],
+  "Canada|Qatar":[{team:"Qatar",n:"H. Ahmed",t:"R"},{team:"Qatar",n:"Madibo",t:"R"}],
   "Belgium|Iran":[{team:"Belgium",n:"Ngoy",t:"R",m:"67"}],
-  "Paraguay|Türkiye":[{team:"Paraguay",n:"Almirón",t:"R",m:"45+3"}],
-  "Iraq|Senegal":[{team:"Iraq",n:"Sulaka",t:"R",m:"13"}],
-  "Uruguay|Spain":[{team:"Uruguay",n:"Canobbio",t:"R",m:"90+"}]
+  "Paraguay|Türkiye":[{team:"Paraguay",n:"Almirón",t:"R",m:"45"}]
 };
 function cardsFor(a,b){
   const list=CARDS[a+'|'+b]||CARDS[b+'|'+a]||[];
@@ -1131,101 +1050,40 @@ function buildFromOF(data){
 }
 function pick(o,keys){ for(const k of keys){ if(o&&o[k]!=null) return o[k]; } }
 function nameOf(v){ if(v==null) return ''; if(typeof v==='string') return v; return v.name||v.team||v.title||v.code||''; }
-/* Adapter for the worldcup26.ir shape (confirmed against the live API):
-   { home_team_name_en | home_team_label, away_team_name_en | away_team_label,
-     home_score, away_score, finished:"TRUE"/"FALSE", time_elapsed,
-     type:"group"/"r32"/"r16"/"qf"/"sf"/"third"/"final", group:"A".."L" or
-     same code as type for knockouts, local_date:"MM/DD/YYYY HH:mm" }
-   Undetermined knockout legs have *_team_id:"0" and only a "*_team_label"
-   like "Winner Match 86" — those fall through to the page's existing TBD
-   handling (flag() has no entry for them, so they render as "TBD"). Extra
-   generic field names are kept as a fallback in case the API shape shifts. */
-const WC26_STAGE_CODES={r32:'Round of 32',r16:'Round of 16',qf:'Quarterfinals',sf:'Semifinals',final:'Final',third:'Third Place Play-off',group:'Group'};
-function pickNum(o,keys){ const v=pick(o,keys); return (v==null||v==='')?null:Number(v); }
-/* worldcup26.ir stores scorers as a Postgres-array-looking string, e.g.
-   {"J. Quiñones 9'","R. Jiménez 67'"} or the literal string "null" when empty. */
-function parseWC26Scorers(raw,side){
-  if(!raw || raw==='null') return [];
-  const inner=String(raw).trim().replace(/^\{|\}$/g,'');
-  if(!inner) return [];
-  const segs=inner.match(/"((?:[^"\\]|\\.)*)"/g) || inner.split(',');
-  return segs.map(seg=>{
-    const s=seg.replace(/^"|"$/g,'').trim();
-    const mm=s.match(/^(.*?)\s+(\d+(?:\+\d+)?)'?$/);
-    return mm ? {s:side,n:mm[1].trim(),m:mm[2]} : {s:side,n:s};
-  });
-}
+/* Adapter for the worldcup26.ir shape:
+   { homeTeam:{name}, awayTeam:{name}, homeScore, awayScore, status, group, stage, datetime } */
 function buildFromWC26(data){
   const arr = Array.isArray(data)?data : (data.matches||data.games||data.data||data.results||data.fixtures||[]);
   const out=[];
   (arr||[]).forEach(m=>{
-    const a=mapTeam(m.home_team_name_en||m.home_team_label||nameOf(pick(m,['homeTeam','home','team1','teamA','home_team']))||''),
-          b=mapTeam(m.away_team_name_en||m.away_team_label||nameOf(pick(m,['awayTeam','away','team2','teamB','away_team']))||'');
+    const a=mapTeam(nameOf(pick(m,['homeTeam','home','team1','teamA','home_team']))),
+          b=mapTeam(nameOf(pick(m,['awayTeam','away','team2','teamB','away_team'])));
     if(!a||!b) return;
-    const hs=pick(m,['home_score','homeScore','homeGoals','scoreHome']),
-          as_=pick(m,['away_score','awayScore','awayGoals','scoreAway']);
-    const hasScore = hs!=null && as_!=null && hs!=='' && as_!=='';
     const status=String(pick(m,['status','state','matchStatus'])||'').toLowerCase();
-    const dtRaw=String(m.local_date||pick(m,['datetime','date','kickoff','startTime','utcDate','dateTime'])||'');
-    const dm=dtRaw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})/);   // worldcup26.ir: MM/DD/YYYY HH:mm
-    const dt = dm ? `${dm[3]}-${dm[1].padStart(2,'0')}-${dm[2].padStart(2,'0')}T${dm[4].padStart(2,'0')}:${dm[5]}:00Z` : dtRaw;
+    const hs=pick(m,['homeScore','home_score','homeGoals','scoreHome']),
+          as_=pick(m,['awayScore','away_score','awayGoals','scoreAway']);
+    const hasScore = hs!=null && as_!=null && hs!=='' && as_!=='';
+    const dt=String(pick(m,['datetime','date','kickoff','startTime','utcDate','dateTime'])||'');
     const ts=Date.parse(dt);
-    /* PLAYED requires the explicit "finished":"TRUE" flag from the feed (or an
-       equally explicit finished/full-time status string as a fallback for other
-       sources sharing this adapter shape) — NEVER a guess from having a score,
-       since scores update live throughout the match. A team's "out" status only
-       comes from STATUS.elim, which is only computed off matches marked final
-       here, so an explicit, conservative flag here is what stops eliminations
-       (and group standings generally) from updating mid-match. */
-    const finishedFlag = m.finished!=null
-      ? String(m.finished).toUpperCase()==='TRUE'
-      : /^(finished|complete|full[- ]?time|ft|ended)$/i.test(String(m.time_elapsed||status||'').trim());
-    const played = hasScore && finishedFlag;
-    /* LIVE = the feed's own time_elapsed says so (a minute count, "1H"/"HT"/
-       "2H"/"ET"/"PEN", anything that isn't "notstarted" or blank) — NOT a
-       comparison against the parsed kickoff time. local_date's timezone isn't
-       documented, so computing "has kickoff passed" from it risked flipping
-       live/not-live by a few hours in either direction. Reading the feed's own
-       live/not-started signal sidesteps that entirely. Surfaced only on the
-       dedicated Live tab — it must never satisfy m.st==='final' anywhere else,
-       so nothing here can prematurely affect standings/eliminations. */
-    const elapsedRaw=String(m.time_elapsed||'').trim();
-    const notStarted = elapsedRaw==='' || /not.?started/i.test(elapsedRaw);
-    const st = played ? 'final' : (!notStarted ? 'live' : 'scheduled');
-    /* Extra-time and penalty-shootout scores (try several plausible field
-       names, since the documented schema doesn't cover them) get run through
-       the same decide() used by the openfootball adapter, so e.g. a 1-1 draw
-       that actually went to penalties is correctly scored as a win, not a
-       draw — "win"/"note" must never be left null when a shootout decided it. */
-    /* "home_penalty_score"/"away_penalty_score" are the confirmed real field
-       names on worldcup26.ir (verified directly against the Germany 1-1(3)
-       Paraguay(4) shootout) — listed first; the rest are fallback guesses. */
-    const hp=pickNum(m,['home_penalty_score','home_pens','homePens','home_penalty','homePenalty','pen_home','penaltyHome','penalties_home','home_penalties','shootout_home','home_pso','pso_home']);
-    const ap=pickNum(m,['away_penalty_score','away_pens','awayPens','away_penalty','awayPenalty','pen_away','penaltyAway','penalties_away','away_penalties','shootout_away','away_pso','pso_away']);
-    const hEt=pickNum(m,['home_score_et','home_et','homeExtraTime','et_home','home_et_score']);
-    const aEt=pickNum(m,['away_score_et','away_et','awayExtraTime','et_away','away_et_score']);
-    let as_v,bs_v,win=null,note='';
-    if(played||st==='live'){
-      const sc={ ft:[Number(hs)||0,Number(as_)||0] };
-      if(hEt!=null&&aEt!=null) sc.et=[hEt,aEt];
-      if(hp!=null&&ap!=null) sc.p=[hp,ap];
-      const d=decide(sc);
-      as_v=d.as; bs_v=d.bs;
-      if(played){ win=d.win; note=d.note; }
-    }
-    const date=dm?`${dm[3]}-${dm[1].padStart(2,'0')}-${dm[2].padStart(2,'0')}`:dtRaw.slice(0,10);
-    const time=dm?`${dm[4].padStart(2,'0')}:${dm[5]}`:cleanTime(pick(m,['time'])||'');
-    const typeRaw=String(m.type||pick(m,['stage','round','phase'])||'').trim().toLowerCase();
-    const stage=WC26_STAGE_CODES[typeRaw]||typeRaw;
-    const isGroup = typeRaw==='group' || (!typeRaw && /^[A-L]$/i.test(String(m.group||'').trim()));
-    const grp=isGroup?(m.group||pick(m,['groupName','group_label','groupLetter'])):null;
+    const future = !isNaN(ts) && Date.now() < ts;                          // kickoff hasn't happened yet
+    const doneStatus = /complete|finished|full|ended|^ft$|played|^final$/.test(status);
+    const liveOrSched = /scheduled|upcoming|not.?started|^ns$|live|in.?play|in.?progress|postpon|tbd|pending/.test(status);
+    /* PLAYED only with a clear finished signal — an explicit "finished" status,
+       or a real score on a match that has already kicked off. Never in the
+       future. This stops 0-0 placeholders from looking like results and wrongly
+       "completing" a group before it's actually over. */
+    const played = !future && (doneStatus || (hasScore && !liveOrSched && !isNaN(ts)));
+    const date=dt.slice(0,10);
+    const time=dt.length>=16?dt.slice(11,16):cleanTime(pick(m,['time'])||'');
+    const stage=String(pick(m,['stage','round','phase'])||'');
+    const grp=pick(m,['group','groupName','group_label','groupLetter']);
+    const isGroup=/group/i.test(stage) || (grp!=null && /^[A-L]$/i.test(String(grp).trim()));
     const sa=sast(ts);
     out.push({ date:sa?sa.date:date, t:sa?sa.t:time, day:sa?sa.day:formatDay(date),
       round:isGroup?'':stage, group:isGroup?('Group '+String(grp||'').replace(/group\s*/i,'').trim()):'',
-      st, a, b, as:as_v, bs:bs_v, win, note,
-      elapsed: st==='live' ? String(m.time_elapsed||'').trim() : undefined,
-      goals:[...parseWC26Scorers(m.home_scorers,'a'),...parseWC26Scorers(m.away_scorers,'b')],
-      cards:cardsFor(a,b) });
+      st:played?'final':'scheduled', a, b,
+      as:played?+hs:undefined, bs:played?+as_:undefined, win:null, note:'',
+      goals:[], cards:cardsFor(a,b) });
   });
   out.sort((x,y)=> x.date<y.date?-1:x.date>y.date?1:(x.t<y.t?-1:x.t>y.t?1:0));
   return out;
@@ -1236,20 +1094,8 @@ function parseLiveGoals(g1,g2){
   (g2||[]).forEach(x=>o.push({s:"b",n:x.name||"",m:x.minute!=null?String(x.minute):undefined,x:x.owngoal?"OG":x.penalty?"pen":undefined}));
   return o;
 }
-/* User-forced data source (clickable "Live from X" picker). Empty string
-   means Auto — try every source in SOURCES' own order. A forced choice is
-   tried first but the others stay as fallback, so a bad pick never bricks
-   the page; it just changes which source wins when both are reachable. */
-let FORCED_SOURCE='';
-try{ FORCED_SOURCE=localStorage.getItem('wc:source')||''; }catch(e){}
-function orderedSources(){
-  if(!FORCED_SOURCE) return SOURCES;
-  const matched=SOURCES.filter(s=>s.name===FORCED_SOURCE);
-  const rest=SOURCES.filter(s=>s.name!==FORCED_SOURCE);
-  return matched.length ? [...matched,...rest] : SOURCES;
-}
 async function fetchLiveData(){
-  for(const s of orderedSources()){
+  for(const s of SOURCES){
     try{
       const r=await fetch(s.url(),{cache:'no-store'}); if(!r.ok) continue;
       const data=await r.json();
@@ -1259,7 +1105,7 @@ async function fetchLiveData(){
   }
   return null;
 }
-let liveBusy=false,lastLive=0,ACTIVE_SOURCE='';
+let liveBusy=false,lastLive=0;
 async function refreshLive(){
   if(liveBusy) return; liveBusy=true;
   const stamp=document.getElementById('stamp');
@@ -1268,18 +1114,15 @@ async function refreshLive(){
     const res=await fetchLiveData();
     if(res){
       MATCHES.length=0; res.built.forEach(m=>MATCHES.push(m));
-      ACTIVE_SOURCE=res.src;
-      deriveT();renderBoard();renderResults();renderFixtures();renderGroups();renderBracket();renderLive();
+      deriveT();renderBoard();renderResults();renderFixtures();renderGroups();
       lastLive=Date.now();
       const played=MATCHES.filter(m=>m.st==='final').length;
-      const live=MATCHES.filter(m=>m.st==='live').length;
       const ts=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
       if(stamp) stamp.innerHTML = played>0
-        ? `⚡ Live from <b>${res.src}</b> · ${played} results${live?` · ${live} live now`:''} · updated ${ts}`
+        ? `⚡ Live from <b>${res.src}</b> · ${played} results · updated ${ts}`
         : `⚡ Live from <b>${res.src}</b> · no results posted yet · checked ${ts}`;
     } else {
       if(stamp) stamp.innerHTML='Showing saved snapshot · live feed loads on your hosted site';
-      renderLive();
     }
     loadScorers();
   }catch(e){
@@ -1289,15 +1132,6 @@ async function refreshLive(){
 /* refresh on load, and again whenever the tab is reopened/refocused */
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden && Date.now()-lastLive>30000) refreshLive(); });
 window.addEventListener('focus',()=>{ if(Date.now()-lastLive>30000) refreshLive(); });
-const sourceSelect=document.getElementById('sourceSelect');
-if(sourceSelect){
-  sourceSelect.value=FORCED_SOURCE;
-  sourceSelect.addEventListener('change',()=>{
-    FORCED_SOURCE=sourceSelect.value;
-    try{ localStorage.setItem('wc:source',FORCED_SOURCE); }catch(e){}
-    refreshLive();
-  });
-}
 
 /* ===== Scorers (live from openfootball goals) + assists (manual) ===== */
 const FAMILY_TEAMS=new Set(PLAYERS.flatMap(p=>p.picks.map(pk=>pk.team)));
@@ -1305,18 +1139,15 @@ const isOurTeam=t=>FAMILY_TEAMS.has(t);
 let SCORERS=[];
 /* Assists aren't carried by any free live feed — maintained by hand.
    Update names/numbers here as the tournament goes on. */
-const ASSISTS_ASOF="as of 29 Jun, Round of 32";
+const ASSISTS_ASOF="as of 24 Jun, group stage";
 const ASSISTS=[
-  {name:"M. Olise",team:"France",a:3},
-  {name:"A. Isak",team:"Sweden",a:3},
-  {name:"B. Guimarães",team:"Brazil",a:3},
-  {name:"K. Mbappé",team:"France",a:2},
-  {name:"J. Kimmich",team:"Germany",a:2},
+  {name:"A. Isak",team:"Sweden",a:2},
   {name:"D. Undav",team:"Germany",a:2},
+  {name:"J. Kimmich",team:"Germany",a:2},
   {name:"J. Enciso",team:"Paraguay",a:2},
-  {name:"M. Salah",team:"Egypt",a:2},
-  {name:"C. Wood",team:"New Zealand",a:2},
-  {name:"N. Saliba",team:"Canada",a:2}
+  {name:"R. Rezaeian",team:"Iran",a:1},
+  {name:"L. Díaz",team:"Colombia",a:1},
+  {name:"N. Saliba",team:"Canada",a:1}
 ];
 async function fetchOF(){
   const urls=[`https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json?_=${Date.now()}`,
@@ -1382,7 +1213,7 @@ async function loadProxyStats(){
       PROXY_REDS={}; d.reds.forEach(x=>{ const t=mapTeam(x.team); PROXY_REDS[t]=(PROXY_REDS[t]||0)+(x.reds||0); });
     }
     [d.scorers,d.assists,d.reds].forEach(arr=>(arr||[]).forEach(x=>{ if(x.photo) PROXY_PHOTOS[x.name]=x.photo; }));
-    deriveT(); renderBoard(); renderResults(); renderScorers(); renderBracket();
+    deriveT(); renderBoard(); renderResults(); renderScorers();
   }catch(e){}
 }
 const PHOTOS={};
@@ -1413,7 +1244,7 @@ async function enrichPhotos(){
 function rankLabel(r){ return r===1?'🥇':r===2?'🥈':r===3?'🥉':r; }
 function srow(rank,name,team,valHTML,fam){
   const medal=rank<=3;
-  return `<div class="srow ${fam?'pfam':''}" data-flag="${flag(team)}"><span class="srk ${medal?'medal':''}">${rankLabel(rank)}</span>${ava(name,team)}`+
+  return `<div class="srow ${fam?'pfam':''}"><span class="srk ${medal?'medal':''}">${rankLabel(rank)}</span>${ava(name,team)}`+
     `<span class="snm"><b>${name}</b><span class="stm">${flag(team)} ${team}</span></span><span class="sgls">${valHTML}</span></div>`;
 }
 function wireAvatars(el){ if(!el) return; el.querySelectorAll('.ava img').forEach(im=>{ im.addEventListener('error',()=>im.remove()); if(im.complete && im.naturalWidth===0) im.remove(); }); }
@@ -1439,7 +1270,7 @@ function renderScorers(){
   }
 }
 
-renderBoard();renderResults();renderFixtures();renderGroups();renderBracket();renderLive();renderScorers();
+renderBoard();renderResults();renderFixtures();renderGroups();renderScorers();
 refreshLive();
 setTimeout(burst,450);
 </script>
