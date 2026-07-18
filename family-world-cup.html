@@ -852,7 +852,7 @@ function tick(){cx.clearRect(0,0,cv.width,cv.height);
         const sd=Math.sqrt(iv.reduce((a,b)=>a+(b-mean)*(b-mean),0)/iv.length);
         robotic=sd<4;
       }
-      if(count!==taps.length || dur<count*60 || count>2000 || robotic){ matrixVoid('tamper'); return; }
+      if(count!==taps.length || dur<count*60 || robotic){ matrixVoid('tamper'); return; }
     }
     const champBefore=Object.keys(scores).reduce((mx,k)=>Math.max(mx,scores[k]),0);
     const isBest=count>best;
@@ -913,6 +913,63 @@ function tick(){cx.clearRect(0,0,cv.width,cv.height);
    fun part: honeypot functions a script kiddie will reach for, plus the
    dissolve. Trip anything and the app rains away into glyphs, leaving a void. */
 let VOIDED=false;
+/* ── the prize: a 1-of-1 canvas-drawn NFT trophy card, certified by JDE ── */
+function drawCheatNFT(c,name){
+  const W=1000,H=1250;c.width=W;c.height=H;const x=c.getContext('2d');
+  const serial='#0x'+Array.from({length:8},()=>'0123456789ABCDEF'[Math.random()*16|0]).join('');
+  const G='アイウエオカキクケコサシスセソタチツテト0123456789$#%&';
+  x.fillStyle='#020805';x.fillRect(0,0,W,H);
+  x.globalAlpha=.16;x.font='18px monospace';                       // faint rain
+  for(let i=0;i<70;i++){const cx=Math.random()*W;let cy=Math.random()*H;for(let j=0;j<14;j++){x.fillStyle=j?'#0f5132':'#c6ff3e';x.fillText(G[Math.random()*G.length|0],cx,cy);cy+=20;}}
+  x.globalAlpha=1;
+  x.strokeStyle='#c6ff3e';x.lineWidth=2;x.strokeRect(28,28,W-56,H-56); // frame + corner ticks
+  x.lineWidth=5;[[28,28],[W-28,28],[28,H-28],[W-28,H-28]].forEach(([cx,cy])=>{x.beginPath();x.moveTo(cx+(cx<W/2?34:-34),cy);x.lineTo(cx,cy);x.lineTo(cx,cy+(cy<H/2?34:-34));x.stroke();});
+  x.textAlign='center';
+  x.fillStyle='#c6ff3e';x.font='700 21px "DM Mono",monospace';x.fillText('◈ NON-FUNGIBLE SHAME ◈ 1 OF 1 ◈',W/2,88);
+  x.fillStyle='#eef6ee';x.font='64px Anton, sans-serif';x.fillText('HACKER WORLD CUP',W/2,168);
+  x.fillStyle='#ffd23f';x.font='54px Anton, sans-serif';x.fillText('2026',W/2,228);
+  const traceTrophy=()=>{x.beginPath();                            // cup bowl, stem, base
+    x.moveTo(340,330);x.lineTo(660,330);x.bezierCurveTo(660,520,580,610,500,630);x.bezierCurveTo(420,610,340,520,340,330);
+    x.moveTo(478,630);x.lineTo(522,630);x.lineTo(530,720);x.lineTo(470,720);x.closePath();
+    x.moveTo(420,720);x.lineTo(580,720);x.lineTo(600,780);x.lineTo(400,780);x.closePath();};
+  const traceHandles=()=>{x.beginPath();
+    x.moveTo(340,360);x.bezierCurveTo(240,360,240,500,360,520);x.moveTo(660,360);x.bezierCurveTo(760,360,760,500,640,520);};
+  x.save();x.translate(6,0);x.strokeStyle='rgba(255,60,60,.7)';x.lineWidth=3;traceTrophy();x.stroke();traceHandles();x.stroke();x.restore(); // chromatic glitch
+  x.save();x.translate(-6,0);x.strokeStyle='rgba(60,220,255,.7)';x.lineWidth=3;traceTrophy();x.stroke();traceHandles();x.stroke();x.restore();
+  x.save();traceTrophy();x.clip();x.font='22px monospace';         // glyph-filled cup
+  for(let gy=320;gy<800;gy+=24)for(let gx=330;gx<680;gx+=20){x.fillStyle=Math.random()<.12?'#c6ff3e':'rgba(34,197,94,.75)';x.fillText(G[Math.random()*G.length|0],gx,gy);}
+  x.restore();
+  x.strokeStyle='#ffd23f';x.lineWidth=6;traceTrophy();x.stroke();traceHandles();x.stroke();
+  for(let gy=330;gy<800;gy+=8){x.fillStyle='rgba(2,8,5,.22)';x.fillRect(300,gy,400,3);}   // scanlines
+  x.fillStyle='#ffd23f';x.font='30px Anton, sans-serif';x.fillText('CERTIFIED CHEATER',W/2,860);
+  x.fillStyle='#eef6ee';x.font='46px Anton, sans-serif';x.fillText((name||'UNKNOWN AGENT').toUpperCase(),W/2,922);
+  x.fillStyle='#7d9484';x.font='20px "DM Mono",monospace';x.fillText('CHAMPION OF THE VOID · SCORE: REDACTED',W/2,962);
+  x.fillStyle='#c6ff3e';x.font='22px "DM Mono",monospace';x.fillText(serial,W/2,1010);
+  x.textAlign='left';let bx=70;                                     // barcode of shame
+  while(bx<330){const bw=2+Math.random()*7;x.fillStyle='#c6ff3e';x.fillRect(bx,1090,bw,70);bx+=bw+2+Math.random()*6;}
+  x.fillStyle='#7d9484';x.font='13px "DM Mono",monospace';x.fillText('AUTHENTIC FRAUD · DO NOT TRADE',70,1185);
+  const sx=830,sy=1120,R=78;                                        // JDE seal
+  x.strokeStyle='#ffd23f';x.lineWidth=4;x.beginPath();x.arc(sx,sy,R,0,7);x.stroke();
+  x.lineWidth=1.5;x.beginPath();x.arc(sx,sy,R-14,0,7);x.stroke();
+  x.fillStyle='#ffd23f';x.font='44px Anton, sans-serif';x.textAlign='center';x.fillText('JDE',sx,sy+15);
+  x.font='11px "DM Mono",monospace';const ring='★ CERTIFIED BY JDE ★ VOID AUTHORITY ';
+  for(let i=0;i<ring.length;i++){const a=-Math.PI/2+i*(Math.PI*2/ring.length);x.save();x.translate(sx+Math.cos(a)*(R-26),sy+Math.sin(a)*(R-26));x.rotate(a+Math.PI/2);x.fillText(ring[i],0,0);x.restore();}
+  x.textAlign='left';
+  return serial;
+}
+function claimNFT(name){
+  const c=document.createElement('canvas');drawCheatNFT(c,name);
+  const box=document.createElement('div');
+  box.style.cssText='position:fixed;inset:0;z-index:100001;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(0,0,0,.55);padding:20px';
+  const img=new Image();img.src=c.toDataURL('image/png');
+  img.style.cssText='max-width:min(86vw,380px);max-height:62vh;border:1px solid #c6ff3e;border-radius:12px;box-shadow:0 30px 80px rgba(198,255,62,.15)';
+  const a=document.createElement('a');a.href=img.src;a.download='hacker-worldcup-2026-champion-nft.png';
+  a.textContent='⬇ download your prize';
+  a.style.cssText='font-family:"DM Mono",monospace;font-size:14px;color:#04140b;background:#c6ff3e;padding:12px 22px;border-radius:999px;text-decoration:none;font-weight:700';
+  const cap=document.createElement('div');cap.textContent='1 of 1 · minted on the blockchain of shame · certified by JDE';
+  cap.style.cssText='font-family:"DM Mono",monospace;font-size:11px;color:rgba(198,255,62,.5);text-align:center';
+  box.append(img,a,cap);document.body.appendChild(box);
+}
 function matrixVoid(reason){
   if(VOIDED) return; VOIDED=true;
   try{sessionStorage.setItem('wc:void',reason||'1');}catch(e){}
@@ -958,6 +1015,12 @@ function matrixVoid(reason){
       x.fillText(shown+((t*2|0)%2?'█':' '),W/2,Hh/2-8);
       if(shown.length>=msg.length){x.font='13px "DM Mono",monospace';x.fillStyle='rgba(198,255,62,.45)';x.fillText(sub,W/2,Hh/2+26);}
       x.textAlign='left';
+      if(shown.length>=msg.length && !document.getElementById('nftClaim')){
+        const b=document.createElement('button');b.id='nftClaim';b.textContent='🏆 claim your prize';
+        b.style.cssText='position:fixed;left:50%;transform:translateX(-50%);top:calc(50% + 64px);z-index:100000;font-family:"DM Mono",monospace;font-size:13px;color:#c6ff3e;background:transparent;border:1px solid rgba(198,255,62,.5);border-radius:999px;padding:11px 22px;cursor:pointer;letter-spacing:.06em';
+        b.onclick=()=>{b.remove();try{claimNFT((typeof me!=='undefined'&&me)||'unknown agent');}catch(e){claimNFT('unknown agent');}};
+        document.body.appendChild(b);
+      }
     }
     requestAnimationFrame(frame);
   }
